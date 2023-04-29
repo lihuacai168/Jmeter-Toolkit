@@ -29,12 +29,17 @@ Jmeter-Toolkit 支持 JMX 文件的上传、执行、查看JMX、查看JTL以及
 如果你的 Docker Compose 版本为 2.x，请参考 [Docker Compose 2.x 官方文档](https://docs.docker.com/compose/cli-command/)。
 
 ## 3. 启动 Jmeter-Toolkit
-### 3.1 不构建，直接拉取远程镜像快速启动
+### 3.1 使用docker
+```shell
+docker run -d -p 18000:8000 --name jmeter-toolkit -v $(pwd)/jmx_files:/app/jmx_files -v $(pwd)/jtl_files:/app/jtl_files rikasai/jmeter-toolkit:latest
+```
+
+### 3.2 使用make(docker-compose)
 ```shell
 make
 ```
 
-### 3.2 构建本地镜像并且启动
+### 3.3 构建本地镜像并且启动(docker-compose)
 ```shell
 make up
 ```
@@ -45,6 +50,12 @@ http://localhost:18000/docs
 
 
 # 使用步骤
-## 1. 上传 JMX 文件
-## 2. 执行 JMX 文件
-## 3. 生成 HTML 报告
+1. 上传 JMX 文件
+2. 执行 JMX 文件 得到 JTL 文件夹
+3. 使用 JTL 文件生成 HTML 报告
+
+
+# Contributors
+<a href="https://github.com/lihuacai168/Jmeter-Toolkit/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=lihuacai168/Jmeter-Toolkit" />
+</a>
