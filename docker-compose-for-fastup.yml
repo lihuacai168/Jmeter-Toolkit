@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  fastapi_jmx:
+    image: rikasai/jmeter-toolkit:${TAG:-latest}
+    ports:
+      - "18000:8000"
+    volumes:
+      - ./jmx_files:/app/jmx_files
+      - ./jtl_files:/app/jtl_files
+

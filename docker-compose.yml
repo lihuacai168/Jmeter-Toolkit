@@ -1,9 +1,13 @@
-version: "3"
+version: "3.8"
 
 services:
   fastapi_jmx:
-    build: .
-    image: fastapi_jmx:latest
+    image: jmeter-toolkit:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}
     ports:
       - "18000:8000"
     volumes:

@@ -18,14 +18,11 @@ RUN wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_
     rm apache-jmeter-${JMETER_VERSION}.tgz && \
     chmod +x ${JMETER_HOME}/bin/jmeter
 
-# 设置pip源为清华源
-RUN mkdir -p /root/.pip && \
-    echo "[global]" > /root/.pip/pip.conf && \
-    echo "index-url = https://pypi.tuna.tsinghua.edu.cn/simple" >> /root/.pip/pip.conf
+ARG PIP_INDEX_URL="https://pypi.org/simple"
 
 # 安装项目依赖
 COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+RUN pip install -r /app/requirements.txt -i ${PIP_INDEX_URL}
 
 # 设置工作目录
 WORKDIR /app
