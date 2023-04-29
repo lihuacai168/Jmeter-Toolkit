@@ -6,6 +6,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+jmx_files
+jtl_files
+
 # C extensions
 *.so
 
