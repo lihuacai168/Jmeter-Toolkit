@@ -17,16 +17,15 @@ from starlette.staticfiles import StaticFiles
 logger.add(
     sink=sys.stderr,
     format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
-           "<level>{level: <4}</level> | "
-           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    "<level>{level: <4}</level> | "
+    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
     level="INFO",
 )
 
-app = FastAPI()
+app = FastAPI(title="Jmeter ToolKit")
 
 JMX_FILE_PATH = Path("jmx_files")
 JTL_FILES_PATH = Path("jtl_files")
-
 
 
 class ExecuteJmxResponse(BaseModel):
@@ -140,7 +139,11 @@ async def list_files(file_type: FileType):
     else:
         raise HTTPException(status_code=400, detail="Invalid file type")
 
-    files = [f for f in os.listdir(dir_path) if isfile(os.path.join(dir_path, f)) and f.endswith(ext)]
+    files = [
+        f
+        for f in os.listdir(dir_path)
+        if isfile(os.path.join(dir_path, f)) and f.endswith(ext)
+    ]
     return {"files": files}
 
 
@@ -154,12 +157,15 @@ async def get_file_content(filename: str, file_type: FileType):
         raise HTTPException(status_code=400, detail="Invalid file type")
 
     if not file.exists():
-        raise HTTPException(status_code=404, detail=f"File not found, file={file.absolute()}")
+        raise HTTPException(
+            status_code=404, detail=f"File not found, file={file.absolute()}"
+        )
 
     with open(file, "r") as f:
         content = f.read()
 
     return {"filename": filename, "content": content}
+
 
 if __name__ == "__main__":
     import uvicorn
