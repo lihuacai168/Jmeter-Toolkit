@@ -21,9 +21,12 @@ Jmeter-Toolkit 支持 JMX 文件的上传、执行、查看JMX、查看JTL以及
 
 
 # 使用演示
-## 1. 上传JMX文件并执行
+## 1. 上传，执行，报告一条龙
+![jmx-upload-execute-report.gif](docs%2Fjmx-upload-execute-report.gif)
+
+## 2. 上传JMX文件并执行
 ![upload-execute.png](docs%2Fupload-execute.png)
-## 2. 查看报告
+## 3. 查看报告
 ![report.png](docs%2Freport.png)
 # 快速启动
 ## 1. 安装 Docker
