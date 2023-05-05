@@ -13,4 +13,5 @@ services:
     volumes:
       - ./jmx_files:/app/jmx_files
       - ./jtl_files:/app/jtl_files
+      - ./reports:/app/reports
 
