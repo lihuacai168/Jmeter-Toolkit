@@ -1,0 +1,9 @@
+.git
+**/*.log
+**/*-log-*
+**/*.tar.gz
+Dockerfile
+.dockerignore
+*.md
+.github
+docs/
