@@ -8,7 +8,7 @@ Jmeter-Toolkit 支持 JMX 文件的上传、执行、查看JMX、查看JTL以及
 - [x] **jmx文件查看**
 - [x] **jtl文件查看**
 - [x] **html报告生成**
-- [ ] **合并jmx上传执行查看报告**
+- [x] **合并jmx上传执行查看报告**
 - [ ] **jtl文件上传**
 - [ ] **jmx文件下载**
 - [ ] **jtl文件下载**
@@ -19,6 +19,12 @@ Jmeter-Toolkit 支持 JMX 文件的上传、执行、查看JMX、查看JTL以及
 - [ ] **分布式执行**
 - [ ] **使用数据库管理文件**
 
+
+# 使用演示
+## 1. 上传JMX文件并执行
+![upload-execute.png](docs%2Fupload-execute.png)
+## 2. 查看报告
+![report.png](docs%2Freport.png)
 # 快速启动
 ## 1. 安装 Docker
 请参考 [Docker 官方文档](https://docs.docker.com/engine/install/) 安装 Docker。
@@ -49,10 +55,6 @@ make up
 http://localhost:18000/docs
 
 
-# 使用步骤
-1. 上传 JMX 文件
-2. 执行 JMX 文件 得到 JTL 文件夹
-3. 使用 JTL 文件生成 HTML 报告
 
 
 # Contributors
