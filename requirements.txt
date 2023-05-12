@@ -1,5 +1,9 @@
-fastapi
-uvicorn
+fastapi~=0.95.1
+uvicorn~=0.22.0
 python-multipart
-loguru
+loguru~=0.7.0
 
+
+PyYAML~=6.0
+pydantic~=1.10.7
+starlette~=0.26.1
