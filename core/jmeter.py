@@ -61,6 +61,8 @@ class JMeterManager:
             result: RunCmdResp = self.run_cmd(command, cache=cache, cache_key=output_file)
             cost_time = datetime.now() - now
             logger.info(f"Cost time: {cost_time}")
+            logger.info(f"run jmx task finish, remove cache key={output_file}")
+            cache.remove(output_file)
 
             if result.returncode == 0:
                 return ExecuteJmxResponse(
@@ -114,9 +116,10 @@ class JMeterManager:
 
         # use jmeter generate html report
         command = f"jmeter -g {jtl_file} -o {report_dir}"
-        logger.info(f"generate html report command: {command}")
+        logger.info(f"start to generate html report command: {command}")
+        start: datetime = datetime.now()
         subprocess.run(command, shell=True, check=True)
-
+        logger.info(f"generate html report finish, cost time: {(datetime.now()- start).total_seconds():.2f}s")
         return report_dir
 
     @staticmethod

@@ -30,7 +30,7 @@ class Cache:
         ...
 
     @abstractmethod
-    def remove(self, pid):
+    def remove(self, key):
         pass
 
 
