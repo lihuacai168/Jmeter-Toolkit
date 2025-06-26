@@ -1,68 +1,88 @@
+.PHONY: help install dev test lint format clean build up down logs shell
 
-compose-file := docker-compose.yml
+# Default target
+help:
+	@echo "Available commands:"
+	@echo "  install     Install dependencies"
+	@echo "  dev         Run development server"
+	@echo "  test        Run tests"
+	@echo "  lint        Run linting"
+	@echo "  format      Format code"
+	@echo "  clean       Clean up"
+	@echo "  build       Build Docker image"
+	@echo "  up          Start services with docker-compose"
+	@echo "  down        Stop services"
+	@echo "  logs        View logs"
+	@echo "  shell       Open shell in container"
 
-ifdef COMPOSE_FILE
-    compose-file := $(COMPOSE_FILE)
-endif
+# Install dependencies
+install:
+	pip install -r requirements.txt
 
-cmd = docker-compose -f $(compose-file)
+# Development server
+dev:
+	uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-image_tag ?= latest
+# Run tests
+test:
+	pytest tests/ -v --cov=. --cov-report=html
 
+# Lint code
+lint:
+	flake8 --max-line-length=100 --exclude=venv,__pycache__,.git .
+	mypy . --ignore-missing-imports
 
-tag := $(tag)
+# Format code
+format:
+	black . --line-length=100
+	isort . --profile black
 
-service := $(word 1,$(MAKECMDGOALS))
+# Clean up
+clean:
+	find . -type f -name "*.pyc" -delete
+	find . -type d -name "__pycache__" -delete
+	find . -type d -name "*.egg-info" -exec rm -rf {} +
+	rm -rf .coverage htmlcov/ .pytest_cache/
 
-.PHONY: fastup
-fastup:
-	export TAG=$(image_tag); docker-compose -f docker-compose-for-fastup.yml up -d  --build --remove-orphans
-
-.PHONY: up
-up:
-	$(cmd) up -d  --build --remove-orphans
-
-.PHONY: up-no-build
-up-no-build:
-	$(cmd) up -d --remove-orphans
-
-.PHONY: up-tag
-up-tag:
-	export TAG=$(tag); $(cmd) up -d  --build --remove-orphans
-
-
-.PHONY: down
-down:
-	$(cmd) down
-
-.PHONY: build
+# Docker operations
 build:
-	# build latest
-	$(cmd) build
+	docker-compose build
 
-git-tag:
-	git checkout $(tag)
+up:
+	docker-compose up -d
 
-.PHONY: build-tag
-build-tag:git-tag
-	export TAG=$(tag);  $(cmd) build
+down:
+	docker-compose down
 
-.PHONY: config
-config:
-	$(cmd) config
-
-.PHONY: ps
-ps:
-	$(cmd) ps
-
-.PHONY: logs
 logs:
-	$(cmd) logs -f fastapi_jmx
+	docker-compose logs -f
 
-.PHONY: restart
-restart:
-	$(cmd) restart $(service)
+shell:
+	docker-compose exec app /bin/bash
 
-.PHONY: exec
-exec:
-	$(cmd) exec $(service) /bin/bash
+# Database operations
+migrate:
+	alembic upgrade head
+
+migrate-create:
+	alembic revision --autogenerate -m "$(message)"
+
+# Development setup
+setup-dev:
+	cp .env.example .env
+	pip install -r requirements.txt
+	docker-compose up -d postgres redis
+	sleep 10
+	python -c "from database import Base, engine; Base.metadata.create_all(bind=engine)"
+
+# Production deployment
+deploy:
+	docker-compose -f docker-compose.yml up -d --build
+
+# Monitoring
+monitor:
+	@echo "Application: http://localhost:8000"
+	@echo "Health check: http://localhost:8000/health"
+	@echo "Metrics: http://localhost:8000/metrics"
+	@echo "API docs: http://localhost:8000/docs"
+	@echo "Flower (Celery): http://localhost:5555"
