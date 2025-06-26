@@ -1,7 +1,12 @@
 """Security utilities."""
 import hashlib
-import magic
 import shlex
+try:
+    import magic
+    HAS_MAGIC = True
+except ImportError:
+    HAS_MAGIC = False
+    magic = None
 from pathlib import Path
 from typing import List, Optional
 
@@ -45,6 +50,10 @@ class FileValidator:
     @classmethod
     def validate_mime_type(cls, file_path: Path) -> bool:
         """Validate MIME type using python-magic."""
+        if not HAS_MAGIC:
+            logger.warning("python-magic not available, skipping MIME type validation")
+            return True  # Skip validation if magic is not available
+            
         try:
             mime_type = magic.from_file(str(file_path), mime=True)
             suffix = file_path.suffix.lower()

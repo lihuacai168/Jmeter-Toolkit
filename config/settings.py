@@ -3,7 +3,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseSettings, validator
+from pydantic import field_validator
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -59,25 +60,29 @@ class Settings(BaseSettings):
     log_rotation: str = "1 day"
     log_retention: str = "30 days"
     
-    @validator("jmx_files_path", "jtl_files_path", "reports_path", pre=True)
+    @field_validator("jmx_files_path", "jtl_files_path", "reports_path", mode="before")
+    @classmethod
     def create_directories(cls, v):
         """Create directories if they don't exist."""
         path = Path(v)
         path.mkdir(parents=True, exist_ok=True)
         return path
     
-    @validator("jmeter_home", pre=True)
-    def set_jmeter_home(cls, v, values):
+    @field_validator("jmeter_home", mode="before")
+    @classmethod
+    def set_jmeter_home(cls, v, info):
         """Set JMeter home path."""
         if v is None:
-            version = values.get("jmeter_version", "5.5")
+            # Access other field values from info.data
+            version = info.data.get("jmeter_version", "5.5") if info.data else "5.5"
             return f"/opt/apache-jmeter-{version}"
         return v
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": False
+    }
 
 
 # Global settings instance
