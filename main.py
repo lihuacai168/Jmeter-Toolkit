@@ -168,11 +168,16 @@ async def health_check():
     if PRODUCTION_MODE:
         health_status = HealthChecker.get_health_status()
 
+        # Convert complex service status to simple strings
+        services_status = {}
+        for service_name, service_data in health_status["services"].items():
+            services_status[service_name] = service_data["status"]
+
         response_data = HealthResponse(
             status=health_status["status"],
             version=health_status["version"],
             timestamp=health_status["timestamp"],
-            services=health_status["services"],
+            services=services_status,
         )
 
         status_code = 200 if health_status["status"] == "healthy" else 503
