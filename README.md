@@ -55,22 +55,39 @@ git clone <repository-url>
 cd jmeter_toolit
 ```
 
-### 2. 安装依赖
+### 2. 快速安装（推荐使用 UV）
 ```bash
-# 推荐使用 Python 3.11+
+# 使用自动设置脚本（推荐）
+./setup_dev.sh
+
+# 或手动安装
+uv venv --python 3.11
+uv pip install -e ".[dev,test]"
+```
+
+### 3. 传统安装方式
+```bash
+# 如果不使用 UV
 pip install -r requirements.txt
 ```
 
-### 3. 启动开发服务器
+### 4. 启动开发服务器
 ```bash
-# 主要开发服务器
-python main.py
+# 使用 UV（推荐）
+UV_INDEX_URL=https://pypi.org/simple uv run python main.py
 
-# 或使用简化版开发服务器（用于测试）
+# 简化版开发服务器（用于测试）
+UV_INDEX_URL=https://pypi.org/simple uv run python dev_server.py
+
+# 或使用启动脚本
+./start_dev.sh
+
+# 传统方式
+python main.py
 python dev_server.py
 ```
 
-### 4. 访问应用
+### 5. 访问应用
 - **主界面**: http://localhost:8000
 - **API文档**: http://localhost:8000/docs
 - **健康检查**: http://localhost:8000/health

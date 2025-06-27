@@ -308,4 +308,4 @@ if __name__ == "__main__":
     print("🔍 健康检查: http://localhost:8000/health")
     print("⏹️  按 Ctrl+C 停止服务器")
 
-    uvicorn.run("simple_dev:app", host="0.0.0.0", port=8000, reload=True, log_level="info")
+    uvicorn.run("dev_server:app", host="0.0.0.0", port=8000, reload=True, log_level="info")
