@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "jmeter-toolkit"
 version = "2.0.0"
 description = "A powerful JMeter test management toolkit built with FastAPI"
-readme = "README.md"
+# readme = "README.md"
 license = {text = "MIT"}
 authors = [
     {name = "JMeter Toolkit Team"},
