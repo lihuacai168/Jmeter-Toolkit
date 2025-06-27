@@ -13,7 +13,7 @@ except ImportError:
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import UploadFile, HTTPException
+from fastapi import HTTPException, UploadFile
 from loguru import logger
 
 from config import settings
@@ -204,8 +204,8 @@ def generate_file_hash(file_path: Path) -> str:
 
 def generate_secure_filename(original_filename: str) -> str:
     """Generate secure filename with timestamp and hash."""
-    from datetime import datetime
     import uuid
+    from datetime import datetime
 
     # Sanitize original filename
     safe_name = CommandSanitizer.sanitize_filename(original_filename)

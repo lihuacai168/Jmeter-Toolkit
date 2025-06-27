@@ -7,19 +7,18 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile, Query
+from fastapi import Depends, FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, PlainTextResponse, HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
-from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from config import settings
 from database.base import Base
-from database.models import Task, FileRecord, Report, AuditLog, TaskStatus, FileType
+from database.models import AuditLog, FileRecord, FileType, Report, Task, TaskStatus
 
 # Environment-aware database setup
 if settings.environment == "development" or settings.database_url.startswith("sqlite"):
@@ -32,8 +31,8 @@ if settings.environment == "development" or settings.database_url.startswith("sq
     # Use simpler imports for development
     try:
         from core.jmeter import JMeterManager
-        from middleware import error_handler_middleware, SecurityMiddleware
-        from models import APIResponse, HealthResponse, TaskResponse, FileUploadResponse
+        from middleware import SecurityMiddleware, error_handler_middleware
+        from models import APIResponse, FileUploadResponse, HealthResponse, TaskResponse
         from utils import HealthChecker, get_prometheus_metrics
 
         PRODUCTION_MODE = True
@@ -43,10 +42,10 @@ if settings.environment == "development" or settings.database_url.startswith("sq
         logger.warning("Running in simplified mode due to missing dependencies")
 else:
     # Production configuration
-    from database import engine
     from core.jmeter import JMeterManager
-    from middleware import error_handler_middleware, SecurityMiddleware
-    from models import APIResponse, HealthResponse, TaskResponse, FileUploadResponse
+    from database import engine
+    from middleware import SecurityMiddleware, error_handler_middleware
+    from models import APIResponse, FileUploadResponse, HealthResponse, TaskResponse
     from utils import HealthChecker, get_prometheus_metrics
 
     PRODUCTION_MODE = True
@@ -223,9 +222,9 @@ async def upload_file(file: UploadFile = File(...), jmeter_manager: Optional[JMe
             if not file.filename.endswith(".jmx"):
                 raise HTTPException(status_code=400, detail="Only JMX files allowed")
 
-            from datetime import datetime
             import shutil
             import uuid
+            from datetime import datetime
 
             # Generate safe filename
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -279,8 +278,8 @@ async def execute_jmx(request: dict, jmeter_manager: Optional[JMeterManager] = D
             return APIResponse.success_response(data=response_data, message="JMeter execution started")
         else:
             # Simplified execution for development
-            from datetime import datetime
             import uuid
+            from datetime import datetime
 
             # Check if file exists
             jmx_path = settings.jmx_files_path / file_name

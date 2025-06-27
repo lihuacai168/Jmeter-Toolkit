@@ -1,10 +1,11 @@
 """Database models."""
 
+import uuid
 from datetime import datetime
 from enum import Enum as PyEnum
-from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean, Float, Enum
+
+from sqlalchemy import Boolean, Column, DateTime, Enum, Float, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
 
 from .base import Base
 

@@ -3,7 +3,7 @@
 import traceback
 from typing import Callable
 
-from fastapi import Request, Response, HTTPException
+from fastapi import HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from loguru import logger
 

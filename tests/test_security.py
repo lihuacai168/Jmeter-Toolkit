@@ -1,11 +1,12 @@
 """Security tests."""
 
-import pytest
-from pathlib import Path
-from fastapi import UploadFile
 from io import BytesIO
+from pathlib import Path
 
-from utils.security import FileValidator, CommandSanitizer, generate_secure_filename
+import pytest
+from fastapi import UploadFile
+
+from utils.security import CommandSanitizer, FileValidator, generate_secure_filename
 
 
 class TestFileValidator:

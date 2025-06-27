@@ -14,18 +14,19 @@ os.environ["ENVIRONMENT"] = "development"
 os.environ["DEBUG"] = "true"
 os.environ["LOG_LEVEL"] = "INFO"
 
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.middleware.cors import CORSMiddleware
-from loguru import logger
-from pydantic import BaseModel
-from typing import Optional
+import json
 import shutil
 import uuid
 from datetime import datetime
-import json
+from typing import Optional
+
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from loguru import logger
+from pydantic import BaseModel
 
 # 创建目录
 for directory in ["jmx_files", "jtl_files", "reports", "static", "templates"]:

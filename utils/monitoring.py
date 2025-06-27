@@ -1,18 +1,17 @@
 """Monitoring and health check utilities."""
 
-import psutil
-import redis
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-from prometheus_client import Counter, Histogram, Gauge, generate_latest
-from sqlalchemy import text
+import psutil
+import redis
 from loguru import logger
+from prometheus_client import Counter, Gauge, Histogram, generate_latest
+from sqlalchemy import text
 
 from config import settings
 from database import SessionLocal
-
 
 # Prometheus metrics
 REQUEST_COUNT = Counter("jmeter_toolkit_requests_total", "Total requests", ["method", "endpoint"])

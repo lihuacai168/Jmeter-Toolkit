@@ -1,6 +1,7 @@
 """Celery application configuration."""
 
 from celery import Celery
+
 from config import settings
 
 # Create Celery instance

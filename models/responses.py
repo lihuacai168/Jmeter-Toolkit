@@ -1,8 +1,8 @@
 """API response models."""
 
 from typing import Any, Generic, Optional, TypeVar
-from pydantic import BaseModel
 
+from pydantic import BaseModel
 
 T = TypeVar("T")
 

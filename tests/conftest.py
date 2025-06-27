@@ -2,6 +2,7 @@
 
 import os
 import tempfile
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -15,7 +16,6 @@ os.environ["DEBUG"] = "true"
 
 from database import Base, get_db
 from dev_server import app
-
 
 # Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
