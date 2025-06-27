@@ -6,17 +6,24 @@ ENV ENVIRONMENT=development
 ENV DATABASE_URL=sqlite:///./ci_test.db
 ENV DEBUG=true
 
-# Install minimal dependencies
+# Install minimal dependencies and UV
 RUN apt-get update && apt-get install -y \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Add UV to PATH permanently
+ENV PATH="/root/.cargo/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
 
-# Copy and install only essential dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart
+# Copy project configuration
+COPY pyproject.toml ./
+
+# Install only essential dependencies using UV
+RUN uv venv && \
+    uv pip install fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart pytest httpx
 
 # Copy minimal application files
 COPY main.py .
@@ -34,5 +41,5 @@ RUN touch ci_test.db
 # Expose port
 EXPOSE 8000
 
-# Start with development server for CI testing
-CMD ["python", "-m", "uvicorn", "dev_server:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start with development server for CI testing using UV venv
+CMD ["/bin/bash", "-c", "source .venv/bin/activate && python -m uvicorn dev_server:app --host 0.0.0.0 --port 8000"]

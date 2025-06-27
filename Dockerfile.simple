@@ -17,13 +17,18 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
+# Install UV
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Add UV to PATH permanently
+ENV PATH="/root/.cargo/bin:$PATH"
+
 # Copy project files
 COPY pyproject.toml ./
-COPY requirements.txt ./
 
-# Create virtual environment and install dependencies directly with pip
-RUN python -m venv .venv && \
-    /bin/bash -c "source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt"
+# Install dependencies using UV
+RUN uv venv && \
+    uv pip install -e "."
 
 # Copy application code
 COPY . .

@@ -68,7 +68,7 @@ uv pip install -e ".[dev,test]"
 ### 3. 传统安装方式
 ```bash
 # 如果不使用 UV
-pip install -r requirements.txt
+uv pip install -e "."
 ```
 
 ### 4. 启动开发服务器

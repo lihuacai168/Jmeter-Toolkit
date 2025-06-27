@@ -5,23 +5,27 @@ ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
 ENV DATABASE_URL=sqlite:///./app.db
 
-# Install system dependencies
+# Install system dependencies and UV
 RUN apt-get update && apt-get install -y \
     curl \
     libmagic1 \
     libpq-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Add UV to PATH permanently
+ENV PATH="/root/.cargo/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements file
-COPY requirements.txt ./
+# Copy project configuration
+COPY pyproject.toml ./
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies using UV
+RUN uv venv && \
+    uv pip install -e "."
 
 # Copy application code
 COPY . .
@@ -41,5 +45,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -s http://localhost:8000/health || exit 1
 
-# Start application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start application using UV venv
+CMD ["/bin/bash", "-c", "source .venv/bin/activate && uvicorn main:app --host 0.0.0.0 --port 8000"]

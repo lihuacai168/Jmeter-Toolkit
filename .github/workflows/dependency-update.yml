@@ -1,8 +1,9 @@
-name: Dependency Updates
+name: Dependency Updates (Disabled - Using UV and pyproject.toml)
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+  # Disabled - we now use UV and pyproject.toml for dependency management
+  # schedule:
+  #   - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
   workflow_dispatch:
 
 jobs:

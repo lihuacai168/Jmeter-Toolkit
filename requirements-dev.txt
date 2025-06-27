@@ -1,8 +1,6 @@
 # Development dependencies
-# Install with: pip install -r requirements-dev.txt
-
-# Include production requirements
--r requirements.txt
+# Install with: uv pip install -r requirements-dev.txt
+# Or better: uv pip install -e ".[dev]"
 
 # Pre-commit hooks and code quality
 pre-commit>=3.8.0
