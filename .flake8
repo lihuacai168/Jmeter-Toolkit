@@ -13,4 +13,3 @@ exclude =
 per-file-ignores =
     __init__.py:F401,
     tests/*:E402,F401,W503
-EOF < /dev/null

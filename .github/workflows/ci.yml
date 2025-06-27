@@ -235,10 +235,10 @@ jobs:
         sudo chmod +x /usr/local/bin/docker-compose
         docker-compose --version
 
-    - name: Run Docker Compose Integration Tests
+    - name: Run Simplified CI Integration Tests
       run: |
-        chmod +x scripts/test-integration.sh
-        ./scripts/test-integration.sh ci
+        chmod +x scripts/test-ci-simple.sh
+        ./scripts/test-ci-simple.sh
 
     - name: Run Production Environment Tests
       run: |

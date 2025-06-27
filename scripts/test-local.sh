@@ -18,14 +18,14 @@ echo "🐳 Starting test environment with Docker Compose..."
 docker-compose -f docker-compose.test.yml up -d --build
 
 echo "⏳ Waiting for services to be healthy..."
-max_attempts=60
+max_attempts=5
 attempt=0
 
 while [ $attempt -lt $max_attempts ]; do
-    app_healthy=$(docker-compose -f docker-compose.test.yml ps | grep "test-app" | grep -c "healthy" || echo "0")
-    server_healthy=$(docker-compose -f docker-compose.test.yml ps | grep "test-server" | grep -c "healthy" || echo "0")
+    app_healthy=$(docker-compose -f docker-compose.test.yml ps | grep "test-app" | grep -c "healthy" 2>/dev/null || echo "0")
+    server_healthy=$(docker-compose -f docker-compose.test.yml ps | grep "test-server" | grep -c "healthy" 2>/dev/null || echo "0")
 
-    if [ "$app_healthy" -ge "1" ] && [ "$server_healthy" -ge "1" ]; then
+    if [ "${app_healthy:-0}" -ge "1" ] && [ "${server_healthy:-0}" -ge "1" ]; then
         echo "✅ Services are healthy"
         break
     fi

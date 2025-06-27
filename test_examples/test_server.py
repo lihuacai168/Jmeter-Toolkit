@@ -322,4 +322,4 @@ if __name__ == "__main__":
     print("  GET  /api/error            - Random error endpoint")
     print("  POST /api/upload           - File upload simulation")
 
-    uvicorn.run(app, host="0.0.0.0", port=3000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=3000, reload=False)

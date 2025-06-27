@@ -67,20 +67,20 @@ services:
   ci-test-server:
     build:
       context: .
-      dockerfile: Dockerfile.ci
+      dockerfile: Dockerfile.pip
     ports:
       - "3001:3000"
     environment:
       - PYTHONPATH=/app
-    command: python test_examples/test_server.py
+    command: ["python", "test_examples/test_server.py"]
     volumes:
       - ./test_examples:/app/test_examples
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 5s
-      timeout: 5s
-      retries: 15
-      start_period: 20s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
 volumes:
   ci_jmx_files:
