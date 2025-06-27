@@ -56,8 +56,7 @@ Add these badges to your main README.md:
 
 The workflows use these configuration files:
 - `.flake8` - Flake8 linting configuration
-- `pyproject.toml` - Black, isort, mypy, pytest configuration
-- `requirements.txt` - Python dependencies
+- `pyproject.toml` - Python dependencies, project configuration, and tool settings
 
 ## 🚀 Triggering Workflows
 
@@ -128,9 +127,9 @@ env:
 ### Common Issues
 
 1. **Tests Failing**: Check the test logs in the Actions tab
-2. **Dependencies**: Update requirements.txt if imports fail
+2. **Dependencies**: Update pyproject.toml if imports fail, run `uv pip install -e "."`
 3. **Python Version**: Ensure compatibility with all tested versions
-4. **Docker Build**: Check Dockerfile syntax and dependencies
+4. **Docker Build**: Check Dockerfile syntax and UV installation
 
 ### Debug Mode
 Add this to any workflow step for debugging:

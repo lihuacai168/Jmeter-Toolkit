@@ -133,8 +133,7 @@
 
 ### 工具配置
 - `.flake8` - Flake8 代码检查配置
-- `pyproject.toml` - Black, isort, mypy, pytest 配置
-- `requirements.txt` - Python 依赖
+- `pyproject.toml` - Black, isort, mypy, pytest 配置和 Python 依赖管理
 
 ## 🛠️ 自定义配置
 
@@ -164,8 +163,8 @@ env:
 
 ### 常见问题
 1. **测试失败**: 检查 Actions 页面的详细日志
-2. **依赖问题**: 更新 `requirements.txt`
-3. **Docker 构建失败**: 检查 `Dockerfile` 语法
+2. **依赖问题**: 更新 `pyproject.toml` 或运行 `uv pip install -e "."`
+3. **Docker 构建失败**: 检查 `Dockerfile` 语法和 UV 安装
 4. **代码质量问题**: 运行本地 flake8/black 检查
 
 ### 调试技巧

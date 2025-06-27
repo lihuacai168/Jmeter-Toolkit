@@ -5,16 +5,18 @@ ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
 ENV DATABASE_URL=sqlite:///./app.db
 
-# Install system dependencies and UV
+# Install system dependencies and UV in one RUN command
 RUN apt-get update && apt-get install -y \
     curl \
     libmagic1 \
     libpq-dev \
     gcc \
     && rm -rf /var/lib/apt/lists/* \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh
+    && curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && export PATH="/root/.cargo/bin:$PATH" \
+    && /root/.cargo/bin/uv --version
 
-# Add UV to PATH permanently
+# Add UV to PATH permanently for subsequent layers
 ENV PATH="/root/.cargo/bin:$PATH"
 
 # Set working directory
@@ -23,9 +25,9 @@ WORKDIR /app
 # Copy project configuration
 COPY pyproject.toml ./
 
-# Install Python dependencies using UV
-RUN uv venv && \
-    uv pip install -e "."
+# Install Python dependencies using UV (with full path to ensure it works)
+RUN /root/.cargo/bin/uv venv && \
+    /root/.cargo/bin/uv pip install -e "."
 
 # Copy application code
 COPY . .

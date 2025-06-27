@@ -7,7 +7,11 @@
 ### 安装测试依赖
 
 ```bash
-pip install pytest pytest-asyncio pytest-cov httpx
+# 使用 UV 安装测试依赖
+uv venv
+source .venv/bin/activate  # Linux/macOS
+# 或 .venv\Scripts\activate  # Windows
+uv pip install -e ".[test]"
 ```
 
 ### 运行测试
@@ -128,7 +132,9 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          uv pip install -e "."
       - name: Run tests
         run: |
           python -m pytest tests/ --cov=. --cov-report=xml
