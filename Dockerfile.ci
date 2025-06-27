@@ -20,16 +20,11 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Create non-root user first
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
-# Create required directories and set ownership
-RUN mkdir -p jmx_files jtl_files reports static templates && \
-    chown -R appuser:appuser /app
-
-# Switch to appuser and install dependencies
-USER appuser
+# Install dependencies as root
 RUN uv venv && uv pip install -e ".[test]"
+
+# Create required directories
+RUN mkdir -p jmx_files jtl_files reports static templates
 
 # Create test database file
 RUN touch ci_test.db
