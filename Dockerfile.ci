@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && export PATH="/root/.cargo/bin:$PATH" \
-    && /root/.cargo/bin/uv --version
+    && . "$HOME/.cargo/env" \
+    && uv --version
 
 # Add UV to PATH permanently for subsequent layers
-ENV PATH="/root/.cargo/bin:$PATH"
+ENV PATH="/root/.local/bin:/root/.cargo/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
@@ -23,9 +23,9 @@ WORKDIR /app
 # Copy project configuration
 COPY pyproject.toml ./
 
-# Install only essential dependencies using UV (with full path)
-RUN /root/.cargo/bin/uv venv && \
-    /root/.cargo/bin/uv pip install fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart pytest httpx
+# Install only essential dependencies using UV
+RUN uv venv && \
+    uv pip install fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart pytest httpx
 
 # Copy minimal application files
 COPY main.py .
