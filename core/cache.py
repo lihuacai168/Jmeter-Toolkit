@@ -11,15 +11,15 @@ from abc import ABC, abstractmethod
 
 class Cache:
     def __init__(self):
-        ...
+        pass
 
     @abstractmethod
     def get(self, key: str):
-        ...
+        pass
 
     @abstractmethod
     def set(self, key, value, ttl: int = -1):
-        ...
+        pass
 
     @abstractmethod
     def get_all_pid(self):
@@ -27,7 +27,7 @@ class Cache:
 
     @abstractmethod
     def get_all_tasks(self) -> dict:
-        ...
+        pass
 
     @abstractmethod
     def remove(self, key):

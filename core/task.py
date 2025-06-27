@@ -33,9 +33,7 @@ class TaskManger:
         self.cache = cache
 
     def execute_jmx(self, file_name: str) -> ExecuteJmxResponse:
-        execute_result: ExecuteJmxResponse = self.jmeter_manager.execute_jmx(
-            file_name=file_name, cache=self.cache
-        )
+        execute_result: ExecuteJmxResponse = self.jmeter_manager.execute_jmx(file_name=file_name, cache=self.cache)
         return execute_result
 
     def list_tasks(self) -> dict:
@@ -55,7 +53,7 @@ class TaskManger:
                 logger.info(f"start to remove cache {file_name=} {pid=}")
                 self.cache.remove(file_name)
                 logger.info(f"remove cache {file_name=} {pid=} success")
-            except Exception as e:
+            except Exception:
                 logger.error(f"stop {file_name=} {pid=} fail {traceback.format_exc()}")
                 return RunCmdResp(
                     pid=pid,

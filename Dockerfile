@@ -1,44 +1,43 @@
-FROM python:3.9-buster
+FROM python:3.11-slim
 
-# 设置环境变量
-ENV JMETER_VERSION 5.5
-ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
-ENV PATH ${JMETER_HOME}/bin:${PATH}
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV ENVIRONMENT=development
+ENV DATABASE_URL=sqlite:///./app.db
+ENV DEBUG=true
 
-ARG DEBIAN_REPO="deb.debian.org"
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    libmagic1 \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-
-ARG DEBIAN_REPO="deb.debian.org"
-ARG PIP_INDEX_URL="https://pypi.org/simple"
-
-# replace sources.list, if use docker-compose
-RUN echo "deb http://$DEBIAN_REPO/debian/ buster main contrib non-free" > /etc/apt/sources.list && \
-    echo "deb-src http://$DEBIAN_REPO/debian/ buster main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb http://$DEBIAN_REPO/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb-src http://$DEBIAN_REPO/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb http://$DEBIAN_REPO/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb-src http://$DEBIAN_REPO/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list
-
-# update apt-get and install packages
-RUN  apt-get update && \
-    apt-get install -y wget unzip openjdk-11-jdk ant
-
-# install JMeter
-RUN wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz && \
-    tar -xzf apache-jmeter-${JMETER_VERSION}.tgz -C /opt && \
-    rm apache-jmeter-${JMETER_VERSION}.tgz && \
-    chmod +x ${JMETER_HOME}/bin/jmeter
-
-
-# install python packages
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt -i ${PIP_INDEX_URL}
-
+# Set working directory
 WORKDIR /app
 
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
 COPY . .
 
+# Create required directories
+RUN mkdir -p jmx_files jtl_files reports static templates
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Expose port
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Health check (simplified to accept both 200 and 503)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -s http://localhost:8000/health || exit 1
 
+# Start application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

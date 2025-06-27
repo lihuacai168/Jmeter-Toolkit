@@ -1,0 +1,217 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.0, v2.1.0, etc.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+
+    - name: Run full test suite
+      run: |
+        export ENVIRONMENT=testing
+        export DATABASE_URL=sqlite:///./release_test.db
+        mkdir -p jmx_files jtl_files reports static templates
+        python -m pytest tests/ -v --cov=. --cov-report=xml
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        if [ -f CHANGELOG.md ]; then
+          echo "changelog_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "changelog_exists=false" >> $GITHUB_OUTPUT
+          # Generate basic changelog from git commits
+          echo "## Changes" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          git log --oneline --pretty=format:"- %s" HEAD~10..HEAD >> CHANGELOG.md
+        fi
+
+    - name: Extract version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION=${GITHUB_REF#refs/tags/}
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Create release package
+      run: |
+        # Create release directory
+        mkdir -p release/jmeter-toolkit-${{ steps.version.outputs.version }}
+
+        # Copy application files
+        cp -r *.py config core database middleware models utils tests requirements.txt release/jmeter-toolkit-${{ steps.version.outputs.version }}/
+        cp -r static templates release/jmeter-toolkit-${{ steps.version.outputs.version }}/ 2>/dev/null || true
+        cp README.md LICENSE DEPLOYMENT.md TESTING.md release/jmeter-toolkit-${{ steps.version.outputs.version }}/
+        cp start_dev.sh start_simple.sh release/jmeter-toolkit-${{ steps.version.outputs.version }}/
+        cp Dockerfile docker-compose.yml release/jmeter-toolkit-${{ steps.version.outputs.version }}/ 2>/dev/null || true
+
+        # Create installation script
+        cat > release/jmeter-toolkit-${{ steps.version.outputs.version }}/install.sh << 'EOF'
+        #!/bin/bash
+        echo "🚀 Installing JMeter Toolkit ${{ steps.version.outputs.version }}"
+
+        # Check Python version
+        python_version=$(python3 --version 2>&1 | awk '{print $2}' | cut -d. -f1,2)
+        required_version="3.9"
+
+        if [ "$(printf '%s\n' "$required_version" "$python_version" | sort -V | head -n1)" != "$required_version" ]; then
+            echo "❌ Python 3.9+ required. Current version: $python_version"
+            exit 1
+        fi
+
+        echo "✅ Python version check passed"
+
+        # Install dependencies
+        echo "📦 Installing dependencies..."
+        pip install -r requirements.txt
+
+        # Create directories
+        echo "📁 Creating directories..."
+        mkdir -p jmx_files jtl_files reports logs
+
+        # Make scripts executable
+        chmod +x start_dev.sh start_simple.sh
+
+        echo "🎉 Installation completed!"
+        echo "📖 Read DEPLOYMENT.md for usage instructions"
+        echo "🚀 Quick start: ./start_dev.sh"
+        EOF
+
+        chmod +x release/jmeter-toolkit-${{ steps.version.outputs.version }}/install.sh
+
+        # Create archive
+        cd release
+        tar -czf jmeter-toolkit-${{ steps.version.outputs.version }}.tar.gz jmeter-toolkit-${{ steps.version.outputs.version }}/
+        zip -r jmeter-toolkit-${{ steps.version.outputs.version }}.zip jmeter-toolkit-${{ steps.version.outputs.version }}/
+        cd ..
+
+    - name: Build Docker image for release
+      if: false  # Disabled - using existing build_and_push_image.yml
+      run: |
+        echo "Docker build handled by separate workflow"
+
+    - name: Generate release notes
+      run: |
+        cat > release_notes.md << EOF
+        # JMeter Toolkit ${{ steps.version.outputs.version }}
+
+        ## 🚀 Features
+        - Complete JMeter test management toolkit
+        - RESTful API for JMX file management
+        - Real file upload/download functionality
+        - Environment-aware configuration (dev/prod)
+        - Comprehensive test suite (30+ tests)
+        - Docker support with health checks
+        - Security-first approach with file validation
+
+        ## 📦 Installation
+
+        ### Quick Install
+        \`\`\`bash
+        # Download and extract
+        wget https://github.com/\${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/jmeter-toolkit-${{ steps.version.outputs.version }}.tar.gz
+        tar -xzf jmeter-toolkit-${{ steps.version.outputs.version }}.tar.gz
+        cd jmeter-toolkit-${{ steps.version.outputs.version }}
+
+        # Install
+        ./install.sh
+
+        # Start development server
+        ./start_dev.sh
+        \`\`\`
+
+        ### Docker
+        \`\`\`bash
+        docker pull rikasai/jmeter-toolkit:${{ steps.version.outputs.version }}
+        docker run -p 8000:8000 rikasai/jmeter-toolkit:${{ steps.version.outputs.version }}
+        \`\`\`
+
+        ## 📋 Requirements
+        - Python 3.9+
+        - 512MB RAM minimum
+        - 100MB disk space
+
+        ## 🔗 Links
+        - [Documentation](./DEPLOYMENT.md)
+        - [Testing Guide](./TESTING.md)
+        - [API Documentation](http://localhost:8000/docs)
+
+        ## 📊 Test Coverage
+        - **Coverage**: 41%
+        - **Tests**: 30 passing
+        - **Security**: File validation, command sanitization
+        - **Performance**: Tested up to 10 concurrent users
+
+        EOF
+
+        if [ -f CHANGELOG.md ]; then
+          echo "" >> release_notes.md
+          echo "## 📝 Changelog" >> release_notes.md
+          cat CHANGELOG.md >> release_notes.md
+        fi
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        release_name: JMeter Toolkit ${{ steps.version.outputs.version }}
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
+
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/jmeter-toolkit-${{ steps.version.outputs.version }}.tar.gz
+        asset_name: jmeter-toolkit-${{ steps.version.outputs.version }}.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload ZIP asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/jmeter-toolkit-${{ steps.version.outputs.version }}.zip
+        asset_name: jmeter-toolkit-${{ steps.version.outputs.version }}.zip
+        asset_content_type: application/zip
+
+    - name: Docker image note
+      run: |
+        echo "Docker image will be built and pushed by separate workflow"

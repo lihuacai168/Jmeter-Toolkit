@@ -1,0 +1,38 @@
+FROM python:3.11-slim
+
+# Set environment variables for CI
+ENV PYTHONUNBUFFERED=1
+ENV ENVIRONMENT=development
+ENV DATABASE_URL=sqlite:///./ci_test.db
+ENV DEBUG=true
+
+# Install minimal dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy and install only essential dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart
+
+# Copy minimal application files
+COPY main.py .
+COPY dev_server.py .
+COPY config/ config/
+COPY database/ database/
+COPY models/ models/
+
+# Create required directories
+RUN mkdir -p jmx_files jtl_files reports static templates
+
+# Create test database file
+RUN touch ci_test.db
+
+# Expose port
+EXPOSE 8000
+
+# Start with development server for CI testing
+CMD ["python", "-m", "uvicorn", "dev_server:app", "--host", "0.0.0.0", "--port", "8000"]
