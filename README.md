@@ -63,11 +63,11 @@ pip install -r requirements.txt
 
 ### 3. 启动开发服务器
 ```bash
-# 简化版开发服务器（推荐）
-python simple_dev.py
+# 主要开发服务器
+python main.py
 
-# 或使用完整版开发服务器
-python run_dev.py
+# 或使用简化版开发服务器（用于测试）
+python dev_server.py
 ```
 
 ### 4. 访问应用
