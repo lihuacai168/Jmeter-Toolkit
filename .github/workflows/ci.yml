@@ -165,6 +165,12 @@ jobs:
     - name: Test Docker image
       run: |
         docker run --rm -d --name ci-test-container -p 8001:8000 jmeter-toolkit:ci-test
+        # Check if container is running immediately after starting
+        if [ "$(docker inspect -f '{{.State.Running}}' ci-test-container 2>/dev/null)" != "true" ]; then
+          echo "❌ Container ci-test-container failed to start. Displaying logs:"
+          docker logs ci-test-container
+          exit 1
+        fi
         echo "Waiting for container to be healthy..."
         SUCCESS=false
         for i in {1..30}; do
