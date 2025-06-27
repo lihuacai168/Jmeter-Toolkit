@@ -177,11 +177,13 @@ jobs:
           echo "Attempt $i/30: Health check failed with status $HTTP_STATUS. Retrying in 2 seconds..."
           sleep 2
         done
-        docker stop ci-test-container
         if [ "$SUCCESS" = "false" ]; then
-          echo "❌ Docker health check failed after multiple retries."
+          echo "❌ Docker health check failed after multiple retries. Displaying container logs:"
+          docker logs ci-test-container
+          docker stop ci-test-container
           exit 1
         fi
+        docker stop ci-test-container
 
   integration:
     name: Integration Tests
