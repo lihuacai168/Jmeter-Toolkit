@@ -36,7 +36,7 @@ services:
   ci-app:
     build:
       context: .
-      dockerfile: Dockerfile.ci
+      dockerfile: Dockerfile.pip
     ports:
       - "8002:8000"
     environment:
@@ -48,6 +48,8 @@ services:
       - PYTHONPATH=/app
     volumes:
       - ./test_examples:/app/test_examples
+      - ./tests:/app/tests
+      - ./pytest.ini:/app/pytest.ini
       - ci_jmx_files:/app/jmx_files
       - ci_jtl_files:/app/jtl_files
       - ci_reports:/app/reports

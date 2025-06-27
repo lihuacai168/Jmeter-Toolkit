@@ -31,9 +31,8 @@ max_attempts=10
 attempt=0
 
 while [ $attempt -lt $max_attempts ]; do
-    app_healthy=$(docker-compose -f $COMPOSE_FILE ps | grep "ci-app" | grep -c "healthy" 2>/dev/null || echo "0")
-
-    if [ "${app_healthy:-0}" -ge "1" ]; then
+    # Check if ci-app service is healthy
+    if docker-compose -f $COMPOSE_FILE ps | grep "ci-app" | grep -q "healthy"; then
         echo "✅ Essential services are healthy"
         break
     fi
@@ -66,8 +65,17 @@ for i in {1..5}; do
     sleep 5
 done
 
+# Check pytest availability
+echo "🔍 Checking pytest availability..."
+if ! docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest --version > /dev/null 2>&1; then
+    echo "❌ pytest not available in container"
+    echo "📋 Available Python packages:"
+    docker-compose -f $COMPOSE_FILE exec -T ci-app pip list | grep -i pytest || echo "No pytest packages found"
+    exit 1
+fi
+
 # Run core API tests
 echo "🧪 Running core API tests..."
-docker-compose -f $COMPOSE_FILE exec -T ci-app pytest tests/test_execute_api.py -v --tb=short
+docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest tests/test_execute_api.py -v --tb=short
 
 echo "✅ Simplified CI integration tests completed successfully!"
