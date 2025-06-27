@@ -13,7 +13,7 @@ except ImportError:
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import HTTPException, UploadFile
+from fastapi import UploadFile
 from loguru import logger
 
 from config import settings

@@ -21,7 +21,7 @@ async def error_handler_middleware(request: Request, call_next: Callable) -> Res
             status_code=exc.status_code,
             content=APIResponse.error_response(message=exc.detail, code=f"HTTP_{exc.status_code}").dict(),
         )
-    except Exception as exc:
+    except Exception:
         logger.error(f"Unhandled exception: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,

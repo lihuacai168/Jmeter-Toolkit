@@ -1,9 +1,6 @@
 # !/usr/bin/python3
 # -*- coding: utf-8 -*-
 import os
-import shutil
-import subprocess
-import traceback
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -95,7 +92,7 @@ class JMeterManager:
         # Find file record
         file_record = (
             self.db.query(FileRecord)
-            .filter(FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted == False)
+            .filter(FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted is False)
             .first()
         )
 
@@ -140,12 +137,11 @@ class JMeterManager:
     async def execute_jmx_sync_dev(self, file_name: str) -> dict:
         """Execute JMX file synchronously for development."""
         import subprocess
-        import uuid
 
         # Find file record
         file_record = (
             self.db.query(FileRecord)
-            .filter(FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted == False)
+            .filter(FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted is False)
             .first()
         )
 

@@ -1,11 +1,8 @@
 """Enhanced API tests with real upload/download logic."""
 
-import os
-import tempfile
 from io import BytesIO
 from pathlib import Path
 
-import pytest
 from fastapi.testclient import TestClient
 
 
@@ -208,7 +205,6 @@ class TestFileListingIntegration:
 
     def test_list_files_after_upload(self, client: TestClient):
         """Test file listing after uploading files."""
-        import time
         import uuid
 
         # Create unique test identifier

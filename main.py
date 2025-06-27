@@ -1,6 +1,5 @@
 """JMeter Toolkit main application."""
 
-import os
 import sys
 from contextlib import asynccontextmanager
 from enum import Enum
@@ -18,7 +17,6 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from config import settings
 from database.base import Base
-from database.models import AuditLog, FileRecord, FileType, Report, Task, TaskStatus
 
 # Environment-aware database setup
 if settings.environment == "development" or settings.database_url.startswith("sqlite"):
@@ -223,7 +221,6 @@ async def upload_file(file: UploadFile = File(...), jmeter_manager: Optional[JMe
                 raise HTTPException(status_code=400, detail="Only JMX files allowed")
 
             import shutil
-            import uuid
             from datetime import datetime
 
             # Generate safe filename

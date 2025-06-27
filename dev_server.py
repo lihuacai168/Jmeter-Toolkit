@@ -14,7 +14,6 @@ os.environ["ENVIRONMENT"] = "development"
 os.environ["DEBUG"] = "true"
 os.environ["LOG_LEVEL"] = "INFO"
 
-import json
 import shutil
 import uuid
 from datetime import datetime
@@ -22,7 +21,7 @@ from typing import Optional
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger

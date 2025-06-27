@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 # Set environment variables for CI
 ENV PYTHONUNBUFFERED=1
-ENV ENVIRONMENT=development  
+ENV ENVIRONMENT=development
 ENV DATABASE_URL=sqlite:///./ci_test.db
 ENV DEBUG=true
 

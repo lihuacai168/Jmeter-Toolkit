@@ -1,7 +1,6 @@
 """Test configuration."""
 
 import os
-import tempfile
 
 import pytest
 from fastapi.testclient import TestClient
@@ -14,7 +13,7 @@ os.environ["DATABASE_URL"] = "sqlite:///./test.db"
 os.environ["ENVIRONMENT"] = "testing"
 os.environ["DEBUG"] = "true"
 
-from database import Base, get_db
+from database import get_db
 from dev_server import app
 
 # Test database setup

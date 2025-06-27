@@ -53,7 +53,7 @@ class TaskManger:
                 logger.info(f"start to remove cache {file_name=} {pid=}")
                 self.cache.remove(file_name)
                 logger.info(f"remove cache {file_name=} {pid=} success")
-            except Exception as e:
+            except Exception:
                 logger.error(f"stop {file_name=} {pid=} fail {traceback.format_exc()}")
                 return RunCmdResp(
                     pid=pid,
