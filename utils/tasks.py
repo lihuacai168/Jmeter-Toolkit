@@ -6,7 +6,7 @@ import subprocess
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 from celery import current_task
 from loguru import logger
