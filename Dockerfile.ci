@@ -17,9 +17,9 @@ COPY database/ database/
 COPY models/ models/
 COPY pyproject.toml ./
 
-# Sync the project
+# Sync the project (skip build validation)
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-editable
+    uv sync --no-editable --no-build
 
 # CI stage
 FROM python:3.11-slim

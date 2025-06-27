@@ -20,9 +20,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Copy the project into the intermediate image
 COPY . /app
 
-# Sync the project
+# Sync the project (skip build validation)
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-editable
+    uv sync --no-editable --no-build
 
 # Production stage
 FROM python:3.11-slim
