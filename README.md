@@ -1,7 +1,15 @@
 # JMeter Toolkit v2.0
 
+![CI/CD](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/CI/CD%20Pipeline/badge.svg)
+![Code Quality](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Code%20Quality/badge.svg)
+![Security](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Security%20Scan/badge.svg)
+![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-green.svg)
+![Coverage](https://img.shields.io/badge/coverage-41%25-yellow.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 JMeter Toolkit 是一个专门为 JMeter 测试管理而设计的强大工具集。  
-基于 FastAPI + Vue.js 构建，提供现代化的 Web 界面和强大的后端服务。  
+基于 FastAPI 构建，提供现代化的 RESTful API 和强大的后端服务。  
 支持异步任务处理、数据持久化、监控指标和分布式部署。
 
 ## ✅ 已实现功能

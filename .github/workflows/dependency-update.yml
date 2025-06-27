@@ -1,0 +1,186 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+        
+    - name: Install pip-tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-tools
+        
+    - name: Backup current requirements
+      run: |
+        cp requirements.txt requirements.txt.backup
+        
+    - name: Update dependencies
+      run: |
+        # Create requirements.in if it doesn't exist
+        if [ ! -f requirements.in ]; then
+          # Extract package names without versions
+          sed 's/[>=<].*$//' requirements.txt > requirements.in
+        fi
+        
+        # Update to latest versions
+        pip-compile --upgrade requirements.in
+        
+    - name: Install updated dependencies
+      run: |
+        pip install -r requirements.txt
+        
+    - name: Run tests with updated dependencies
+      run: |
+        export ENVIRONMENT=testing
+        export DATABASE_URL=sqlite:///./dep_test.db
+        mkdir -p jmx_files jtl_files reports static templates
+        python -m pytest tests/ -v --tb=short
+        
+    - name: Check for security vulnerabilities
+      run: |
+        pip install safety
+        safety check --json --output safety-report.json || echo "Security check completed with warnings"
+        
+    - name: Generate update report
+      run: |
+        echo "## Dependency Update Report" > update-report.md
+        echo "" >> update-report.md
+        echo "### Updated Packages" >> update-report.md
+        echo "" >> update-report.md
+        
+        # Compare old and new requirements
+        if [ -f requirements.txt.backup ]; then
+          echo "#### Changes:" >> update-report.md
+          echo '```diff' >> update-report.md
+          diff requirements.txt.backup requirements.txt >> update-report.md || true
+          echo '```' >> update-report.md
+        fi
+        
+        echo "" >> update-report.md
+        echo "### Test Results" >> update-report.md
+        echo "- ✅ All tests passed with updated dependencies" >> update-report.md
+        echo "- ✅ Security scan completed" >> update-report.md
+        
+        # Add current versions
+        echo "" >> update-report.md
+        echo "### Current Package Versions" >> update-report.md
+        echo '```' >> update-report.md
+        pip list --format=freeze | head -20 >> update-report.md
+        echo '```' >> update-report.md
+        
+    - name: Check if requirements changed
+      id: changes
+      run: |
+        if [ -f requirements.txt.backup ]; then
+          if ! diff -q requirements.txt requirements.txt.backup > /dev/null; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Requirements file has changes"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes in requirements"
+          fi
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Create Pull Request
+      if: steps.changes.outputs.changed == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update dependencies"
+        title: "🔄 Automated Dependency Updates"
+        body: |
+          ## 🔄 Automated Dependency Updates
+          
+          This PR contains automated updates to project dependencies.
+          
+          ### 🧪 Testing
+          - ✅ All tests pass with updated dependencies
+          - ✅ Security vulnerabilities checked
+          
+          ### 📋 Changes
+          See the diff in `requirements.txt` for specific version changes.
+          
+          ### 🔍 Review Notes
+          - Please review the changes carefully
+          - Check for any breaking changes in updated packages
+          - Verify that all functionality works as expected
+          
+          ### 🤖 Automated Process
+          This PR was created automatically by the dependency update workflow.
+          
+        branch: dependency-updates
+        delete-branch: true
+        
+    - name: Upload update report
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-update-report
+        path: |
+          update-report.md
+          safety-report.json
+          requirements.txt
+          requirements.txt.backup
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+        
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety bandit pip-audit
+        pip install -r requirements.txt
+        
+    - name: Run comprehensive security audit
+      run: |
+        echo "## Security Audit Report" > security-audit.md
+        echo "" >> security-audit.md
+        echo "### Safety Check" >> security-audit.md
+        echo '```' >> security-audit.md
+        safety check --full-report >> security-audit.md || echo "Safety check completed with warnings"
+        echo '```' >> security-audit.md
+        echo "" >> security-audit.md
+        
+        echo "### Pip Audit" >> security-audit.md
+        echo '```' >> security-audit.md
+        pip-audit >> security-audit.md || echo "Pip audit completed with warnings"
+        echo '```' >> security-audit.md
+        echo "" >> security-audit.md
+        
+        echo "### Bandit Code Scan" >> security-audit.md
+        echo '```' >> security-audit.md
+        bandit -r . -ll >> security-audit.md || echo "Bandit scan completed with warnings"
+        echo '```' >> security-audit.md
+        
+    - name: Upload security audit
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-audit-report
+        path: security-audit.md

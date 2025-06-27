@@ -55,10 +55,9 @@ def test_list_tasks(client: TestClient):
 def test_invalid_file_type(client: TestClient):
     """Test invalid file type parameter."""
     response = client.get("/files?file_type=invalid")
-    # simple_dev returns 200 with error in response body
-    assert response.status_code == 200
-    data = response.json()
-    assert data["success"] is False
+    # simple_dev now returns proper HTTP status codes
+    assert response.status_code == 400
+    assert "Invalid file type" in response.json()["detail"]
 
 
 def test_task_not_found(client: TestClient):

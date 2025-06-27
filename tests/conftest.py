@@ -13,7 +13,7 @@ os.environ["ENVIRONMENT"] = "testing"
 os.environ["DEBUG"] = "true"
 
 from database import Base, get_db
-from simple_dev import app
+from dev_server import app
 
 
 # Test database setup
