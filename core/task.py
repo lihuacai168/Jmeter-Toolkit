@@ -33,9 +33,7 @@ class TaskManger:
         self.cache = cache
 
     def execute_jmx(self, file_name: str) -> ExecuteJmxResponse:
-        execute_result: ExecuteJmxResponse = self.jmeter_manager.execute_jmx(
-            file_name=file_name, cache=self.cache
-        )
+        execute_result: ExecuteJmxResponse = self.jmeter_manager.execute_jmx(file_name=file_name, cache=self.cache)
         return execute_result
 
     def list_tasks(self) -> dict:

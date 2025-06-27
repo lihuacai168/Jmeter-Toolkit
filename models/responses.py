@@ -1,4 +1,5 @@
 """API response models."""
+
 from typing import Any, Generic, Optional, TypeVar
 from pydantic import BaseModel
 
@@ -8,51 +9,35 @@ T = TypeVar("T")
 
 class APIResponse(BaseModel, Generic[T]):
     """Standard API response format."""
-    
+
     success: bool
     message: str
     data: Optional[T] = None
     code: str = "SUCCESS"
     timestamp: Optional[str] = None
-    
+
     @classmethod
     def success_response(
-        cls, 
-        data: Optional[T] = None, 
-        message: str = "Operation successful",
-        code: str = "SUCCESS"
+        cls, data: Optional[T] = None, message: str = "Operation successful", code: str = "SUCCESS"
     ) -> "APIResponse[T]":
         """Create a success response."""
         from datetime import datetime
-        return cls(
-            success=True,
-            message=message,
-            data=data,
-            code=code,
-            timestamp=datetime.utcnow().isoformat()
-        )
-    
+
+        return cls(success=True, message=message, data=data, code=code, timestamp=datetime.utcnow().isoformat())
+
     @classmethod
     def error_response(
-        cls, 
-        message: str = "Operation failed", 
-        code: str = "ERROR",
-        data: Optional[T] = None
+        cls, message: str = "Operation failed", code: str = "ERROR", data: Optional[T] = None
     ) -> "APIResponse[T]":
         """Create an error response."""
         from datetime import datetime
-        return cls(
-            success=False,
-            message=message,
-            data=data,
-            code=code,
-            timestamp=datetime.utcnow().isoformat()
-        )
+
+        return cls(success=False, message=message, data=data, code=code, timestamp=datetime.utcnow().isoformat())
 
 
 class HealthResponse(BaseModel):
     """Health check response."""
-    
+
     status: str
     version: str
     timestamp: str
@@ -61,7 +46,7 @@ class HealthResponse(BaseModel):
 
 class TaskResponse(BaseModel):
     """Task execution response."""
-    
+
     task_id: str
     status: str
     file_name: str
@@ -74,7 +59,7 @@ class TaskResponse(BaseModel):
 
 class FileUploadResponse(BaseModel):
     """File upload response."""
-    
+
     file_name: str
     file_size: int
     file_path: str
@@ -83,7 +68,7 @@ class FileUploadResponse(BaseModel):
 
 class ReportResponse(BaseModel):
     """Report generation response."""
-    
+
     report_id: str
     report_url: str
     jtl_file: str

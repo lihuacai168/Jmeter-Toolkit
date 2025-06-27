@@ -130,7 +130,7 @@ jobs:
         delete-branch: true
         
     - name: Upload update report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dependency-update-report
         path: |
@@ -180,7 +180,7 @@ jobs:
         echo '```' >> security-audit.md
         
     - name: Upload security audit
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: security-audit-report
         path: security-audit.md

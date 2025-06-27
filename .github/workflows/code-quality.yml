@@ -71,7 +71,7 @@ jobs:
         echo '```' >> code-quality-summary.md
         
     - name: Upload code quality reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: code-quality-reports
         path: |
@@ -116,7 +116,7 @@ jobs:
         echo '```' >> dependency-report.md
         
     - name: Upload dependency reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dependency-reports
         path: |

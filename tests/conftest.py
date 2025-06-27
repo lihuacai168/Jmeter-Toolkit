@@ -1,4 +1,5 @@
 """Test configuration."""
+
 import os
 import tempfile
 import pytest
@@ -37,7 +38,7 @@ def override_get_db():
 
 
 # Override database dependency if it exists
-if hasattr(app, 'dependency_overrides'):
+if hasattr(app, "dependency_overrides"):
     app.dependency_overrides[get_db] = override_get_db
 
 
@@ -46,11 +47,12 @@ def setup_test_env():
     """Setup test environment."""
     # Create test directories
     import pathlib
+
     for directory in ["jmx_files", "jtl_files", "reports", "static", "templates"]:
         pathlib.Path(directory).mkdir(exist_ok=True)
-    
+
     yield
-    
+
     # Cleanup test database
     if os.path.exists("test.db"):
         os.remove("test.db")

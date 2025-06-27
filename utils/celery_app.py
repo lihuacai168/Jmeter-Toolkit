@@ -1,13 +1,11 @@
 """Celery application configuration."""
+
 from celery import Celery
 from config import settings
 
 # Create Celery instance
 celery_app = Celery(
-    "jmeter_toolkit",
-    broker=settings.celery_broker_url,
-    backend=settings.celery_result_backend,
-    include=["utils.tasks"]
+    "jmeter_toolkit", broker=settings.celery_broker_url, backend=settings.celery_result_backend, include=["utils.tasks"]
 )
 
 # Configure Celery

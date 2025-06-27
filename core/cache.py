@@ -10,24 +10,20 @@ from abc import ABC, abstractmethod
 
 
 class Cache:
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     @abstractmethod
-    def get(self, key: str):
-        ...
+    def get(self, key: str): ...
 
     @abstractmethod
-    def set(self, key, value, ttl: int = -1):
-        ...
+    def set(self, key, value, ttl: int = -1): ...
 
     @abstractmethod
     def get_all_pid(self):
         pass
 
     @abstractmethod
-    def get_all_tasks(self) -> dict:
-        ...
+    def get_all_tasks(self) -> dict: ...
 
     @abstractmethod
     def remove(self, key):
