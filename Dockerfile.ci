@@ -21,7 +21,7 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
-RUN uv venv && uv pip install fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart pytest httpx
+RUN uv venv && uv pip install -e ".[test]"
 
 # Create required directories
 RUN mkdir -p jmx_files jtl_files reports static templates
