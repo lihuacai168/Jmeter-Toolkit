@@ -273,20 +273,7 @@ jobs:
 
     - name: Create deployment artifact
       run: |
-        tar -czf jmeter-toolkit-deployment.tar.gz \
-          --exclude='.git' \
-          --exclude='__pycache__' \
-          --exclude='*.pyc' \
-          --exclude='.pytest_cache' \
-          --exclude='htmlcov' \
-          --exclude='*.db' \
-          --exclude='jmx_files' \
-          --exclude='jtl_files' \
-          --exclude='venv' \
-          --exclude='reports' \
-          --exclude='static' \
-          --exclude='templates' \
-          .
+        tar -czf jmeter-toolkit-deployment.tar.gz           --exclude='.git'           --exclude='__pycache__'           --exclude='*.pyc'           --exclude='.pytest_cache'           --exclude='htmlcov'           --exclude='*.db'           --exclude='jmx_files'           --exclude='jtl_files'           --exclude='venv'           --exclude='reports'           --exclude='static'           --exclude='templates'           --exclude='coverage.xml'           --exclude='bandit-report.json'           --exclude='safety-report.json'           .
 
     - name: Upload deployment artifact
       uses: actions/upload-artifact@v4
