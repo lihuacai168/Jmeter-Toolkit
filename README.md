@@ -92,6 +92,38 @@ python dev_server.py
 - **API文档**: http://localhost:8000/docs
 - **健康检查**: http://localhost:8000/health
 
+## 📋 快速测试
+
+项目包含完整的测试示例，让你快速体验 JMeter Toolkit 的功能：
+
+### 1. 启动被测试服务器
+```bash
+cd test_examples
+./start_test_server.sh
+# 或者: python test_server.py
+```
+
+### 2. 启动 JMeter Toolkit
+```bash
+# 在另一个终端中
+./start_dev.sh
+# 或者: UV_INDEX_URL=https://pypi.org/simple uv run python main.py
+```
+
+### 3. 运行测试
+1. 访问 http://localhost:8000
+2. 上传 `test_examples/sample_test.jmx` 文件
+3. 点击执行按钮开始测试
+4. 查看实时结果和生成的HTML报告
+
+**测试包含的场景：**
+- ✅ API 功能测试（用户管理、订单管理）
+- ✅ 性能测试（5个并发用户）
+- ✅ 响应断言验证
+- ✅ 变量提取和数据关联
+
+详细说明请查看 [`test_examples/README.md`](test_examples/README.md)
+
 ## 生产环境
 
 ### 1. 使用 Docker Compose（推荐）

@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # Test Database
+  test-postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: jmeter_test
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d jmeter_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  # Test Redis
+  test-redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    tmpfs:
+      - /data
+
+  # Test Application
+  test-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.pip
+    ports:
+      - "8001:8000"
+    environment:
+      - ENVIRONMENT=testing
+      - DATABASE_URL=postgresql://testuser:testpass@test-postgres:5432/jmeter_test
+      - REDIS_URL=redis://test-redis:6379/0
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - PYTHONPATH=/app
+    volumes:
+      - ./test_examples:/app/test_examples
+      - test_jmx_files:/app/jmx_files
+      - test_jtl_files:/app/jtl_files
+      - test_reports:/app/reports
+    depends_on:
+      test-postgres:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # Test Server for Integration Tests
+  test-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.pip
+    ports:
+      - "3000:3000"
+    environment:
+      - PYTHONPATH=/app
+    command: python test_examples/test_server.py
+    volumes:
+      - ./test_examples:/app/test_examples
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  test_jmx_files:
+  test_jtl_files:
+  test_reports:
+
+networks:
+  default:
+    driver: bridge

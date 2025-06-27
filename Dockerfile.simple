@@ -2,30 +2,28 @@ FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV ENVIRONMENT=development
+ENV ENVIRONMENT=production
 ENV DATABASE_URL=sqlite:///./app.db
-ENV DEBUG=true
+ENV PATH="/root/.cargo/bin:$PATH"
 
-# Install system dependencies including UV
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     libmagic1 \
     libpq-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && export PATH="$HOME/.cargo/bin:$PATH"
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy project configuration
-COPY pyproject.toml uv.toml ./
+# Copy project files
+COPY pyproject.toml ./
+COPY requirements.txt ./
 
-# Install Python dependencies using UV
-RUN export PATH="$HOME/.cargo/bin:$PATH" && \
-    uv venv && \
-    uv pip install -e "."
+# Create virtual environment and install dependencies directly with pip
+RUN python -m venv .venv && \
+    /bin/bash -c "source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt"
 
 # Copy application code
 COPY . .
@@ -41,9 +39,9 @@ USER appuser
 # Expose port
 EXPOSE 8000
 
-# Health check (simplified to accept both 200 and 503)
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -s http://localhost:8000/health || exit 1
 
-# Start application using UV
+# Start application
 CMD ["/bin/bash", "-c", "source .venv/bin/activate && uvicorn main:app --host 0.0.0.0 --port 8000"]
