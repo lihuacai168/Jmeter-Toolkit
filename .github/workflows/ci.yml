@@ -165,16 +165,23 @@ jobs:
     - name: Test Docker image
       run: |
         docker run --rm -d --name ci-test-container -p 8001:8000 jmeter-toolkit:ci-test
-        sleep 10
-        # Test health endpoint - accept both 200 and 503 (some services may be unavailable)
-        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8001/health)
-        if [ "$HTTP_STATUS" != "200" ] && [ "$HTTP_STATUS" != "503" ]; then
-          echo "❌ Docker health check failed with status: $HTTP_STATUS"
-          docker stop ci-test-container
+        echo "Waiting for container to be healthy..."
+        SUCCESS=false
+        for i in {1..30}; do
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8001/health || true)
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "503" ]; then
+            echo "✅ Docker health check passed with status: $HTTP_STATUS"
+            SUCCESS=true
+            break
+          fi
+          echo "Attempt $i/30: Health check failed with status $HTTP_STATUS. Retrying in 2 seconds..."
+          sleep 2
+        done
+        docker stop ci-test-container
+        if [ "$SUCCESS" = "false" ]; then
+          echo "❌ Docker health check failed after multiple retries."
           exit 1
         fi
-        echo "✅ Docker health check passed with status: $HTTP_STATUS"
-        docker stop ci-test-container
 
   integration:
     name: Integration Tests
