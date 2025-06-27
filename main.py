@@ -162,32 +162,33 @@ async def frontend_home(request: Request):
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    if PRODUCTION_MODE:
-        health_status = HealthChecker.get_health_status()
+    from datetime import datetime
 
-        # Convert complex service status to simple strings
-        services_status = {}
-        for service_name, service_data in health_status["services"].items():
-            services_status[service_name] = service_data["status"]
-
-        response_data = HealthResponse(
-            status=health_status["status"],
-            version=health_status["version"],
-            timestamp=health_status["timestamp"],
-            services=services_status,
-        )
-
-        status_code = 200 if health_status["status"] == "healthy" else 503
-        return JSONResponse(content=response_data.dict(), status_code=status_code)
-    else:
-        # Simplified health check for development
-        from datetime import datetime
-
+    # Use simplified health check for development and testing environments
+    if not PRODUCTION_MODE or settings.environment in ["development", "testing"]:
         return {
             "success": True,
             "data": {"status": "healthy", "version": settings.app_version, "environment": settings.environment},
             "timestamp": datetime.utcnow().isoformat(),
         }
+
+    # Full health check for production
+    health_status = HealthChecker.get_health_status()
+
+    # Convert complex service status to simple strings
+    services_status = {}
+    for service_name, service_data in health_status["services"].items():
+        services_status[service_name] = service_data["status"]
+
+    response_data = HealthResponse(
+        status=health_status["status"],
+        version=health_status["version"],
+        timestamp=health_status["timestamp"],
+        services=services_status,
+    )
+
+    status_code = 200 if health_status["status"] == "healthy" else 503
+    return JSONResponse(content=response_data.dict(), status_code=status_code)
 
 
 @app.get("/metrics", response_class=PlainTextResponse)
@@ -280,8 +281,14 @@ async def execute_jmx(request: dict, jmeter_manager: Optional[JMeterManager] = D
 
             # Check if file exists
             jmx_path = settings.jmx_files_path / file_name
+            logger.info(f"Looking for JMX file at: {jmx_path}")
+            logger.info(f"File exists: {jmx_path.exists()}")
+
             if not jmx_path.exists():
-                raise HTTPException(status_code=404, detail="JMX file not found")
+                # List available files for debugging
+                available_files = list(settings.jmx_files_path.glob("*.jmx"))
+                logger.error(f"Available JMX files: {[f.name for f in available_files]}")
+                raise HTTPException(status_code=404, detail=f"JMX file not found: {file_name}")
 
             # Create mock task
             task_id = str(uuid.uuid4())
@@ -334,17 +341,28 @@ async def upload_and_execute(
     try:
         # Upload file
         upload_result = await upload_file(file, jmeter_manager)
-        if hasattr(upload_result, "success"):
-            upload_data = upload_result.data
-        else:
+
+        # Extract upload data based on response type
+        if hasattr(upload_result, "data"):  # APIResponse object
+            upload_data = upload_result.data.__dict__ if hasattr(upload_result.data, "__dict__") else upload_result.data
+        elif isinstance(upload_result, dict) and "data" in upload_result:  # Dict response
             upload_data = upload_result["data"]
+        else:
+            raise ValueError("Invalid upload response format")
 
         # Execute file
-        execution_result = await execute_jmx({"file_name": upload_data["file_name"]}, jmeter_manager)
-        if hasattr(execution_result, "data"):
-            execution_data = execution_result.data
-        else:
+        file_name = upload_data.get("file_name") if isinstance(upload_data, dict) else upload_data.file_name
+        execution_result = await execute_jmx({"file_name": file_name}, jmeter_manager)
+
+        # Extract execution data based on response type
+        if hasattr(execution_result, "data"):  # APIResponse object
+            execution_data = (
+                execution_result.data.__dict__ if hasattr(execution_result.data, "__dict__") else execution_result.data
+            )
+        elif isinstance(execution_result, dict) and "data" in execution_result:  # Dict response
             execution_data = execution_result["data"]
+        else:
+            raise ValueError("Invalid execution response format")
 
         if PRODUCTION_MODE:
             return APIResponse.success_response(

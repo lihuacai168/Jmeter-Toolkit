@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # CI Test Database
+  ci-postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: jmeter_ci
+      POSTGRES_USER: ciuser
+      POSTGRES_PASSWORD: cipass
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ciuser -d jmeter_ci"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  # CI Test Redis
+  ci-redis:
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    tmpfs:
+      - /data
+
+  # CI Application
+  ci-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.pip
+    ports:
+      - "8002:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=sqlite:///./ci_test.db
+      - REDIS_URL=redis://ci-redis:6379/0
+      - DEBUG=true
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=/app
+    volumes:
+      - ./test_examples:/app/test_examples
+      - ./tests:/app/tests
+      - ./pytest.ini:/app/pytest.ini
+      - ci_jmx_files:/app/jmx_files
+      - ci_jtl_files:/app/jtl_files
+      - ci_reports:/app/reports
+    depends_on:
+      ci-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # CI Test Server
+  ci-test-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.pip
+    ports:
+      - "3001:3000"
+    environment:
+      - PYTHONPATH=/app
+    command: ["python", "test_examples/test_server.py"]
+    volumes:
+      - ./test_examples:/app/test_examples
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  ci_jmx_files:
+  ci_jtl_files:
+  ci_reports:
+
+networks:
+  default:
+    driver: bridge
