@@ -160,7 +160,7 @@ jobs:
       
     - name: Build Docker image for testing
       run: |
-        docker build -t jmeter-toolkit:ci-test .
+        docker build -f Dockerfile.ci -t jmeter-toolkit:ci-test .
         
     - name: Test Docker image
       run: |
