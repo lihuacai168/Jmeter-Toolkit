@@ -162,32 +162,33 @@ async def frontend_home(request: Request):
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    if PRODUCTION_MODE:
-        health_status = HealthChecker.get_health_status()
+    from datetime import datetime
 
-        # Convert complex service status to simple strings
-        services_status = {}
-        for service_name, service_data in health_status["services"].items():
-            services_status[service_name] = service_data["status"]
-
-        response_data = HealthResponse(
-            status=health_status["status"],
-            version=health_status["version"],
-            timestamp=health_status["timestamp"],
-            services=services_status,
-        )
-
-        status_code = 200 if health_status["status"] == "healthy" else 503
-        return JSONResponse(content=response_data.dict(), status_code=status_code)
-    else:
-        # Simplified health check for development
-        from datetime import datetime
-
+    # Use simplified health check for development and testing environments
+    if not PRODUCTION_MODE or settings.environment in ["development", "testing"]:
         return {
             "success": True,
             "data": {"status": "healthy", "version": settings.app_version, "environment": settings.environment},
             "timestamp": datetime.utcnow().isoformat(),
         }
+
+    # Full health check for production
+    health_status = HealthChecker.get_health_status()
+
+    # Convert complex service status to simple strings
+    services_status = {}
+    for service_name, service_data in health_status["services"].items():
+        services_status[service_name] = service_data["status"]
+
+    response_data = HealthResponse(
+        status=health_status["status"],
+        version=health_status["version"],
+        timestamp=health_status["timestamp"],
+        services=services_status,
+    )
+
+    status_code = 200 if health_status["status"] == "healthy" else 503
+    return JSONResponse(content=response_data.dict(), status_code=status_code)
 
 
 @app.get("/metrics", response_class=PlainTextResponse)

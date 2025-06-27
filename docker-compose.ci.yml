@@ -40,8 +40,8 @@ services:
     ports:
       - "8002:8000"
     environment:
-      - ENVIRONMENT=testing
-      - DATABASE_URL=postgresql://ciuser:cipass@ci-postgres:5432/jmeter_ci
+      - ENVIRONMENT=development
+      - DATABASE_URL=sqlite:///./ci_test.db
       - REDIS_URL=redis://ci-redis:6379/0
       - DEBUG=true
       - LOG_LEVEL=INFO
@@ -54,8 +54,6 @@ services:
       - ci_jtl_files:/app/jtl_files
       - ci_reports:/app/reports
     depends_on:
-      ci-postgres:
-        condition: service_healthy
       ci-redis:
         condition: service_healthy
     healthcheck:

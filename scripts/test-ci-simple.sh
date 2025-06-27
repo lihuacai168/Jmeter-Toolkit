@@ -21,9 +21,9 @@ echo "📋 Configuration:"
 echo "   Compose file: $COMPOSE_FILE"
 echo "   App URL: $APP_URL"
 
-# Start only essential services (skip test server for now)
+# Start only essential services (skip test server and postgres for CI)
 echo "🐳 Starting essential Docker Compose services..."
-docker-compose -f $COMPOSE_FILE up -d --build ci-postgres ci-redis ci-app
+docker-compose -f $COMPOSE_FILE up -d --build ci-redis ci-app
 
 # Wait for essential services to be healthy
 echo "⏳ Waiting for essential services to be healthy..."
@@ -59,7 +59,8 @@ for i in {1..5}; do
         break
     fi
     if [ $i -eq 5 ]; then
-        echo "   ❌ App health check failed"
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/health" || echo "000")
+        echo "   ❌ App health check failed (status: $HTTP_STATUS)"
         exit 1
     fi
     sleep 5
