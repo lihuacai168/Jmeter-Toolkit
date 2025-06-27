@@ -16,7 +16,7 @@ WORKDIR /app
 
 # Copy and install only essential dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir fastapi uvicorn pydantic sqlalchemy loguru
+RUN pip install --no-cache-dir fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette
 
 # Copy minimal application files
 COPY main.py .
