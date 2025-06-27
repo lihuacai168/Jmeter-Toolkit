@@ -283,6 +283,9 @@ jobs:
           --exclude='jmx_files' \
           --exclude='jtl_files' \
           --exclude='venv' \
+          --exclude='reports' \
+          --exclude='static' \
+          --exclude='templates' \
           .
 
     - name: Upload deployment artifact
