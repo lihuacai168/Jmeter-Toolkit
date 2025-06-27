@@ -1,15 +1,11 @@
 #!/bin/bash
-
 # JMeter Toolkit Development Server Starter
 
-echo "🚀 Starting JMeter Toolkit Development Server"
+echo "🚀 Starting JMeter Toolkit Development Server with UV"
 echo ""
 
-# Set development environment variables
-export ENVIRONMENT=development
-export DEBUG=true
-export DATABASE_URL=sqlite:///./jmeter_toolkit_dev.db
-export LOG_LEVEL=INFO
+# Set environment to use official PyPI to avoid mirror issues
+export UV_INDEX_URL=https://pypi.org/simple
 
 # Start the server
-python main.py
+uv run python dev_server.py
