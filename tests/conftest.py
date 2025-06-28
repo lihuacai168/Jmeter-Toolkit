@@ -1,6 +1,7 @@
 """Test configuration."""
 
 import os
+import time
 
 import pytest
 from fastapi.testclient import TestClient
@@ -62,3 +63,21 @@ def client():
     """Create test client."""
     with TestClient(app) as test_client:
         yield test_client
+
+
+def wait_for_task_completion(client, task_id, timeout=10, check_interval=0.1):
+    """Wait for a task to complete with polling."""
+    start_time = time.time()
+
+    while time.time() - start_time < timeout:
+        response = client.get(f"/tasks/{task_id}")
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("success") and data.get("data"):
+                task_status = data["data"].get("status")
+                if task_status in ["completed", "failed"]:
+                    return data["data"]
+
+        time.sleep(check_interval)
+
+    raise TimeoutError(f"Task {task_id} did not complete within {timeout} seconds")

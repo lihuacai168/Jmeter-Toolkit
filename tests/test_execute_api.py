@@ -121,6 +121,13 @@ guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller
 
         # Check data values
         assert data["data"]["file_name"] == filename
+        # Wait for async execution to complete
+        task_id = data["data"].get("task_id")
+        if data["data"]["status"] in ["pending", "running"] and task_id:
+            from tests.conftest import wait_for_task_completion
+
+            task_data = wait_for_task_completion(client, task_id)
+            data["data"] = task_data
         assert data["data"]["status"] == "completed"
         assert data["data"]["output_file"].endswith(".jtl")
 
@@ -181,6 +188,13 @@ guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller
         assert "status" in execution_data
         assert "file_name" in execution_data
         assert "output_file" in execution_data
+        # Wait for async execution to complete
+        task_id = execution_data.get("task_id")
+        if execution_data["status"] in ["pending", "running"] and task_id:
+            from tests.conftest import wait_for_task_completion
+
+            execution_data = wait_for_task_completion(client, task_id)
+            data["data"]["execution"] = execution_data
         assert execution_data["status"] == "completed"
         assert execution_data["file_name"] == upload_data["file_name"]
 
@@ -241,11 +255,20 @@ guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller
         task_ids = [r["data"]["task_id"] for r in responses]
         assert len(set(task_ids)) == 3  # All unique
 
-        # Output files should be created (though timestamps might be same)
-        output_files = [r["data"]["output_file"] for r in responses]
+        # Check that output files will be created
 
-        # Verify all JTL files were created
-        for output_file in output_files:
+        # Wait for all tasks to complete and verify JTL files were created
+        for i, response_data in enumerate(responses):
+            task_id = response_data["data"]["task_id"]
+            # Wait for async execution to complete
+            if response_data["data"]["status"] in ["pending", "running"]:
+                from tests.conftest import wait_for_task_completion
+
+                completed_task = wait_for_task_completion(client, task_id)
+                assert completed_task["status"] == "completed"
+
+            # Verify JTL file exists
+            output_file = response_data["data"]["output_file"]
             jtl_path = Path("jtl_files") / output_file
             assert jtl_path.exists()
 
@@ -266,6 +289,11 @@ guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller
         task_data = task_response.json()
         assert task_data["success"] is True
         assert task_data["data"]["task_id"] == task_id
+        # Wait for async execution to complete
+        if task_data["data"]["status"] in ["pending", "running"]:
+            from tests.conftest import wait_for_task_completion
+
+            task_data["data"] = wait_for_task_completion(client, task_id)
         assert task_data["data"]["status"] == "completed"
 
     def test_list_tasks_after_executions(self, client: TestClient):
