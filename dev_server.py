@@ -10,10 +10,11 @@ sys.path.insert(0, str(current_dir))
 
 # 强制设置环境变量
 os.environ["DATABASE_URL"] = "sqlite:///./dev_jmeter_toolkit.db"
-os.environ["ENVIRONMENT"] = "development"
+os.environ["ENVIRONMENT"] = "production"
 os.environ["DEBUG"] = "true"
 os.environ["LOG_LEVEL"] = "INFO"
 
+import json
 import shutil
 import uuid
 from datetime import datetime
@@ -31,9 +32,55 @@ from pydantic import BaseModel
 for directory in ["jmx_files", "jtl_files", "reports", "static", "templates"]:
     Path(directory).mkdir(exist_ok=True)
 
-# 内存数据存储
-tasks_db = {}
-files_db = {}
+# 数据持久化存储
+TASKS_DB_FILE = Path("dev_tasks.json")
+FILES_DB_FILE = Path("dev_files.json")
+
+
+def load_data():
+    """加载持久化数据"""
+    tasks_db = {}
+    files_db = {}
+
+    try:
+        if TASKS_DB_FILE.exists():
+            with open(TASKS_DB_FILE, "r", encoding="utf-8") as f:
+                tasks_db = json.load(f)
+                logger.info(f"Loaded {len(tasks_db)} tasks from {TASKS_DB_FILE}")
+    except Exception as e:
+        logger.warning(f"Failed to load tasks data: {e}")
+
+    try:
+        if FILES_DB_FILE.exists():
+            with open(FILES_DB_FILE, "r", encoding="utf-8") as f:
+                files_db = json.load(f)
+                logger.info(f"Loaded {len(files_db)} files from {FILES_DB_FILE}")
+    except Exception as e:
+        logger.warning(f"Failed to load files data: {e}")
+
+    return tasks_db, files_db
+
+
+def save_tasks_data(tasks_db):
+    """保存任务数据"""
+    try:
+        with open(TASKS_DB_FILE, "w", encoding="utf-8") as f:
+            json.dump(tasks_db, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to save tasks data: {e}")
+
+
+def save_files_data(files_db):
+    """保存文件数据"""
+    try:
+        with open(FILES_DB_FILE, "w", encoding="utf-8") as f:
+            json.dump(files_db, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to save files data: {e}")
+
+
+# 加载数据
+tasks_db, files_db = load_data()
 
 # FastAPI 应用
 app = FastAPI(title="JMeter Toolkit", version="2.0.0-dev", description="JMeter Toolkit Development Server")
@@ -106,6 +153,7 @@ async def upload_file(file: UploadFile = File(...)):
             "file_size": file_path.stat().st_size,
             "uploaded_at": datetime.utcnow().isoformat(),
         }
+        save_files_data(files_db)
 
         return APIResponse(
             success=True,
@@ -132,8 +180,10 @@ class ExecuteRequest(BaseModel):
 
 @app.post("/execute")
 async def execute_jmx(request: ExecuteRequest):
-    """执行JMX文件（开发模式模拟）."""
+    """执行JMX文件."""
     try:
+        import subprocess
+
         # 检查文件是否存在
         jmx_path = Path("jmx_files") / request.file_name
         if not jmx_path.exists():
@@ -145,36 +195,104 @@ async def execute_jmx(request: ExecuteRequest):
         output_filename = f"{jmx_path.stem}_{timestamp}.jtl"
         output_path = Path("jtl_files") / output_filename
 
-        # 模拟JMeter执行，创建虚拟JTL文件
-        with open(output_path, "w") as f:
-            f.write(
-                """<?xml version="1.0" encoding="UTF-8"?>
+        # 检查是否有真实的JMeter可用
+        jmeter_available = False
+        jmeter_path = shutil.which("jmeter")
+        if jmeter_path:
+            jmeter_available = True
+            logger.info(f"JMeter found at: {jmeter_path}")
+        else:
+            # 检查常见安装路径
+            for path in ["/opt/homebrew/bin/jmeter", "/usr/local/bin/jmeter"]:
+                if os.path.exists(path):
+                    jmeter_available = True
+                    logger.info(f"JMeter found at: {path}")
+                    break
+
+        logger.info(f"JMeter availability check: {jmeter_available}")
+        if jmeter_available:
+            # 使用真实的JMeter执行
+            # 添加JTL配置参数确保生成正确格式的JTL文件
+            command = [
+                "jmeter",
+                "-n",
+                "-t",
+                str(jmx_path),
+                "-l",
+                str(output_path),
+                "-Jjmeter.save.saveservice.output_format=csv",
+                "-Jjmeter.save.saveservice.response_data=false",
+                "-Jjmeter.save.saveservice.samplerData=false",
+                "-Jjmeter.save.saveservice.requestHeaders=false",
+                "-Jjmeter.save.saveservice.responseHeaders=false",
+            ]
+            logger.info(f"Executing JMeter command: {' '.join(command)}")
+
+            start_time = datetime.now()
+            result = subprocess.run(command, capture_output=True, text=True, timeout=300)
+            end_time = datetime.now()
+
+            cost_time = (end_time - start_time).total_seconds()
+
+            if result.returncode == 0:
+                status = "completed"
+                message = "JMeter execution completed successfully"
+            else:
+                status = "failed"
+                message = f"JMeter execution failed: {result.stderr}"
+                logger.error(f"JMeter execution failed: {result.stderr}")
+        else:
+            # 模拟JMeter执行，创建虚拟JTL文件
+            logger.warning("JMeter not found in system PATH, using dummy execution")
+            with open(output_path, "w") as f:
+                f.write(
+                    """<?xml version="1.0" encoding="UTF-8"?>
 <testResults version="1.2">
 <httpSample t="150" lt="0" ts="{}" s="true" lb="HTTP Request" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="1024"/>
 <httpSample t="200" lt="0" ts="{}" s="true" lb="HTTP Request" rc="200" rm="OK" tn="Thread Group 1-2" dt="text" by="2048"/>
 </testResults>""".format(
-                    int(datetime.now().timestamp() * 1000), int(datetime.now().timestamp() * 1000) + 1000
+                        int(datetime.now().timestamp() * 1000), int(datetime.now().timestamp() * 1000) + 1000
+                    )
                 )
-            )
+            status = "completed"
+            message = "JMeter execution completed (simulated - JMeter not found)"
+            cost_time = 0.15
 
         # 记录任务
         tasks_db[task_id] = {
             "task_id": task_id,
-            "status": "completed",
+            "status": status,
             "file_name": request.file_name,
-            "output_file": output_filename,
-            "cost_time": "0.15s",
+            "output_file": output_filename if status == "completed" else None,
+            "cost_time": f"{cost_time:.2f}s",
             "created_at": datetime.utcnow().isoformat(),
             "completed_at": datetime.utcnow().isoformat(),
         }
+        save_tasks_data(tasks_db)
+
+        # 如果执行成功，自动生成HTML报告
+        if status == "completed" and output_filename:
+            try:
+                # 异步生成HTML报告
+                report_result = await generate_html_report(task_id)
+                if report_result.success:
+                    tasks_db[task_id]["report_path"] = report_result.data.get("report_path")
+                    save_tasks_data(tasks_db)  # 保存更新后的任务数据
+                    message += " (HTML report generated)"
+                    logger.info(f"HTML report auto-generated for task {task_id}")
+            except Exception as e:
+                logger.warning(f"Failed to auto-generate HTML report for task {task_id}: {e}")
 
         return APIResponse(
             success=True,
-            message="JMeter execution completed (simulated)",
+            message=message,
             data=tasks_db[task_id],
             timestamp=datetime.utcnow().isoformat(),
         )
 
+    except subprocess.TimeoutExpired:
+        logger.error("JMeter execution timeout")
+        return APIResponse(success=False, message="JMeter execution timed out", timestamp=datetime.utcnow().isoformat())
     except HTTPException:
         raise
     except Exception as e:
@@ -296,6 +414,241 @@ async def download_file(file_type: str, file_name: str):
         raise
     except Exception as e:
         logger.error(f"Download error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/generate-report/{task_id}")
+async def generate_html_report(task_id: str):
+    """Generate HTML report from JTL file."""
+    try:
+        import shutil
+        import subprocess
+
+        # Find task info
+        if task_id not in tasks_db:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        task = tasks_db[task_id]
+        if task["status"] != "completed":
+            raise HTTPException(status_code=400, detail="Task not completed")
+
+        # Find corresponding JTL file
+        output_file = task.get("output_file")
+        if not output_file:
+            raise HTTPException(status_code=404, detail="No JTL file found for this task")
+
+        jtl_path = Path("jtl_files") / output_file
+        if not jtl_path.exists():
+            raise HTTPException(status_code=404, detail="JTL file not found")
+
+        # Create report directory
+        report_dir_name = jtl_path.stem
+        report_dir = Path("reports") / report_dir_name
+
+        # Remove existing report directory if exists
+        if report_dir.exists():
+            shutil.rmtree(report_dir)
+        report_dir.mkdir(parents=True, exist_ok=True)
+
+        # Check if JMeter is available
+        jmeter_available = (
+            os.path.exists("/opt/homebrew/bin/jmeter")
+            or os.path.exists("/usr/local/bin/jmeter")
+            or shutil.which("jmeter") is not None
+        )
+
+        logger.info(f"Report generation - JMeter availability check: {jmeter_available}")
+        if jmeter_available:
+            # Use real JMeter to generate HTML report
+            command = ["jmeter", "-g", str(jtl_path), "-o", str(report_dir)]
+            logger.info(f"Generating HTML report with command: {' '.join(command)}")
+
+            result = subprocess.run(command, capture_output=True, text=True, timeout=300)
+
+            if result.returncode == 0:
+                logger.info(f"HTML report generated successfully: {report_dir}")
+
+                # Update task with report path
+                tasks_db[task_id]["report_path"] = f"/reports/{report_dir_name}/"
+                save_tasks_data(tasks_db)
+
+                return APIResponse(
+                    success=True,
+                    message="HTML report generated successfully",
+                    data={
+                        "task_id": task_id,
+                        "report_path": f"/reports/{report_dir_name}/",
+                        "message": "HTML report generated successfully",
+                    },
+                    timestamp=datetime.utcnow().isoformat(),
+                )
+            else:
+                logger.error(f"JMeter report generation failed: {result.stderr}")
+                raise HTTPException(status_code=500, detail=f"Report generation failed: {result.stderr}")
+        else:
+            # Create mock report for development
+            logger.warning("JMeter not found, creating mock HTML report")
+            (report_dir / "index.html").write_text(
+                f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>JMeter Test Report</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 20px; }}
+                    .header {{ background: #f8f9fa; padding: 20px; border-radius: 5px; }}
+                    .summary {{ margin: 20px 0; }}
+                    .metrics {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }}
+                    .metric {{ background: white; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }}
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>JMeter Test Report</h1>
+                    <p>Generated from: {output_file}</p>
+                    <p>Task ID: {task_id}</p>
+                    <p>Original File: {task['file_name']}</p>
+                </div>
+
+                <div class="summary">
+                    <h2>Test Summary</h2>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>Total Samples</h3>
+                            <p>100</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Success Rate</h3>
+                            <p>95%</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Average Response Time</h3>
+                            <p>150ms</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Max Response Time</h3>
+                            <p>500ms</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2>Note</h2>
+                    <p>This is a mock report for development purposes. Install JMeter to generate real reports.</p>
+                </div>
+            </body>
+            </html>
+            """
+            )
+
+            # Create additional mock files
+            (report_dir / "content").mkdir(exist_ok=True)
+            (report_dir / "content" / "styles.css").write_text("/* Mock CSS */")
+            (report_dir / "content" / "report.json").write_text('{"summary": "Mock report data"}')
+
+            # Update task with report path
+            tasks_db[task_id]["report_path"] = f"/reports/{report_dir_name}/"
+            save_tasks_data(tasks_db)
+
+            return APIResponse(
+                success=True,
+                message="Mock HTML report generated (JMeter not found)",
+                data={
+                    "task_id": task_id,
+                    "report_path": f"/reports/{report_dir_name}/",
+                    "message": "Mock HTML report generated",
+                },
+                timestamp=datetime.utcnow().isoformat(),
+            )
+
+    except subprocess.TimeoutExpired:
+        logger.error("HTML report generation timeout")
+        return APIResponse(success=False, message="Report generation timed out", timestamp=datetime.utcnow().isoformat())
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Generate HTML report error: {e}")
+        return APIResponse(success=False, message=str(e), timestamp=datetime.utcnow().isoformat())
+
+
+@app.get("/download-report-zip/{task_id}")
+async def download_html_report_zip(task_id: str):
+    """Download HTML report as ZIP file."""
+    try:
+        import tempfile
+        import zipfile
+
+        # Find task info
+        if task_id not in tasks_db:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        task = tasks_db[task_id]
+        if task["status"] != "completed":
+            raise HTTPException(status_code=400, detail="Task not completed")
+
+        # 使用任务中的真实report_path
+        report_path = task.get("report_path")
+        if not report_path:
+            raise HTTPException(status_code=404, detail="No report available for this task")
+
+        # 从report_path提取目录名称 (去掉前缀/reports/和后缀/)
+        if report_path.startswith("/reports/"):
+            report_dir_name = report_path[9:]  # 去掉 "/reports/"
+            if report_dir_name.endswith("/"):
+                report_dir_name = report_dir_name[:-1]  # 去掉末尾的 "/"
+        else:
+            raise HTTPException(status_code=404, detail="Invalid report path")
+
+        report_dir = Path("reports") / report_dir_name
+
+        if not report_dir.exists():
+            raise HTTPException(status_code=404, detail="HTML report not found")
+
+        # Create temporary ZIP file
+        with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_file:
+            zip_path = tmp_file.name
+
+        try:
+            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                # Add all files in report directory to ZIP
+                for file_path in report_dir.rglob("*"):
+                    if file_path.is_file():
+                        # Calculate relative path within ZIP
+                        relative_path = file_path.relative_to(report_dir)
+                        zip_file.write(file_path, relative_path)
+
+            # Return ZIP file as download
+            zip_filename = f"jmeter_report_{report_dir_name}.zip"
+
+            # Clean up temp file after response
+            def cleanup():
+                try:
+                    Path(zip_path).unlink()
+                except Exception:
+                    pass
+
+            response = FileResponse(path=zip_path, filename=zip_filename, media_type="application/zip")
+
+            # Schedule cleanup
+            import threading
+
+            timer = threading.Timer(10.0, cleanup)
+            timer.start()
+
+            return response
+
+        except Exception as e:
+            # Clean up on error
+            try:
+                Path(zip_path).unlink()
+            except Exception:
+                pass
+            raise e
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Download HTML report error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
