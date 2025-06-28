@@ -68,7 +68,7 @@ RUN echo "🔍 Checking Python environment..." && \
     echo "🔍 Checking virtual environment..." && \
     echo "Virtual env path: /app/.venv" && \
     echo "🔍 Listing installed packages..." && \
-    python -m pip list | grep -i pytest || echo "❌ No pytest packages found" && \
+    uv pip list | grep -i pytest || echo "❌ No pytest packages found" && \
     echo "🔍 Checking pytest directly..." && \
     python -c "import pytest; print(f'✅ pytest version: {pytest.__version__}')" || echo "❌ pytest import failed" && \
     echo "🔍 Checking pytest command..." && \

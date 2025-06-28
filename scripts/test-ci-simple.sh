@@ -82,11 +82,11 @@ docker-compose -f $COMPOSE_FILE exec -T ci-app ls -la /app/.venv/bin/ | head -10
 
 # List all installed packages
 echo "🔍 All installed packages:"
-docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pip list
+docker-compose -f $COMPOSE_FILE exec -T ci-app uv pip list
 
 # Specifically check for pytest packages
 echo "🔍 Pytest-related packages:"
-docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pip list | grep -i pytest || echo "❌ No pytest packages found"
+docker-compose -f $COMPOSE_FILE exec -T ci-app uv pip list | grep -i pytest || echo "❌ No pytest packages found"
 
 # Try to import pytest directly
 echo "🔍 Testing pytest import:"
@@ -103,7 +103,7 @@ if docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest --version; th
 else
     echo "❌ pytest command failed"
     echo "🔍 Attempting to install pytest manually..."
-    docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pip install pytest
+    docker-compose -f $COMPOSE_FILE exec -T ci-app uv pip install pytest
     if docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest --version; then
         echo "✅ pytest manually installed and working"
     else
