@@ -51,6 +51,8 @@ RUN apt-get update && apt-get install -y \
 # Copy the environment with all dependencies including pytest
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app /app
+# Copy uv binary for package management in runtime
+COPY --from=builder /bin/uv /bin/uv
 
 # Set working directory
 WORKDIR /app
