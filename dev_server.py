@@ -14,6 +14,7 @@ os.environ["ENVIRONMENT"] = "production"
 os.environ["DEBUG"] = "true"
 os.environ["LOG_LEVEL"] = "INFO"
 
+import asyncio
 import json
 import shutil
 import uuid
@@ -178,11 +179,165 @@ class ExecuteRequest(BaseModel):
     file_name: str
 
 
+async def auto_generate_report(task_id: str):
+    """自动生成HTML报告 (用于JMeter执行完成后)."""
+    try:
+        import shutil
+
+        # Find task info
+        if task_id not in tasks_db:
+            logger.error(f"Auto report: Task {task_id} not found")
+            return
+
+        task = tasks_db[task_id]
+        if task["status"] != "completed":
+            logger.error(f"Auto report: Task {task_id} not completed")
+            return
+
+        # Find corresponding JTL file
+        output_file = task.get("output_file")
+        if not output_file:
+            logger.error(f"Auto report: No JTL file found for task {task_id}")
+            return
+
+        jtl_path = Path("jtl_files") / output_file
+        if not jtl_path.exists():
+            logger.error(f"Auto report: JTL file not found: {jtl_path}")
+            return
+
+        # Create report directory
+        report_dir_name = jtl_path.stem
+        report_dir = Path("reports") / report_dir_name
+
+        # Remove existing report directory if exists
+        if report_dir.exists():
+            shutil.rmtree(report_dir)
+        report_dir.mkdir(parents=True, exist_ok=True)
+
+        # Check if JMeter is available
+        jmeter_available = (
+            os.path.exists("/opt/homebrew/bin/jmeter")
+            or os.path.exists("/usr/local/bin/jmeter")
+            or shutil.which("jmeter") is not None
+        )
+
+        if jmeter_available:
+            # Use real JMeter to generate HTML report with async subprocess
+            command = ["jmeter", "-g", str(jtl_path), "-o", str(report_dir)]
+            logger.info(f"Auto report: Generating HTML report with command: {' '.join(command)}")
+
+            process = await asyncio.create_subprocess_exec(
+                *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+            )
+
+            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=300)
+
+            if process.returncode == 0:
+                logger.info(f"Auto report: HTML report generated successfully: {report_dir}")
+                # Update task with report path
+                tasks_db[task_id]["report_path"] = f"/reports/{report_dir_name}/"
+                save_tasks_data(tasks_db)
+            else:
+                logger.error(f"Auto report: JMeter report generation failed: {stderr.decode()}")
+        else:
+            # Create mock report for development
+            logger.warning("Auto report: JMeter not found, creating mock HTML report")
+            (report_dir / "index.html").write_text(
+                f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>JMeter Test Report - {task_id}</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 40px; }}
+                    .mock {{ background: #fffacd; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }}
+                </style>
+            </head>
+            <body>
+                <h1>JMeter Test Report (Mock)</h1>
+                <div class="mock">
+                    <p>This is a mock report generated automatically for development purposes.</p>
+                    <p>Task ID: {task_id}</p>
+                    <p>Generated: {datetime.now().isoformat()}</p>
+                    <p>Install JMeter to generate real reports.</p>
+                </div>
+            </body>
+            </html>
+            """
+            )
+            # Update task with report path
+            tasks_db[task_id]["report_path"] = f"/reports/{report_dir_name}/"
+            save_tasks_data(tasks_db)
+            logger.info(f"Auto report: Mock HTML report generated: {report_dir}")
+
+    except Exception as e:
+        logger.error(f"Auto report: Error generating report for task {task_id}: {e}")
+
+
+async def execute_jmeter_background(task_id: str, command: list, output_path: Path):
+    """在后台执行JMeter命令."""
+    try:
+        logger.info(f"Background task {task_id}: Starting JMeter execution")
+
+        # 更新任务状态为运行中
+        if task_id in tasks_db:
+            tasks_db[task_id]["status"] = "running"
+            save_tasks_data(tasks_db)
+
+        start_time = datetime.now()
+
+        # 使用异步subprocess执行命令
+        process = await asyncio.create_subprocess_exec(
+            *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
+
+        stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=300)
+        end_time = datetime.now()
+        cost_time = (end_time - start_time).total_seconds()
+
+        # 更新任务状态
+        if task_id in tasks_db:
+            if process.returncode == 0:
+                tasks_db[task_id]["status"] = "completed"
+                tasks_db[task_id]["message"] = "JMeter execution completed successfully"
+                logger.info(f"Background task {task_id}: JMeter execution completed successfully")
+
+                # 自动生成HTML报告
+                try:
+                    logger.info(f"Background task {task_id}: Starting automatic HTML report generation")
+                    # 调用生成报告的函数
+                    await auto_generate_report(task_id)
+                    logger.info(f"Background task {task_id}: HTML report generated automatically")
+                except Exception as e:
+                    logger.warning(f"Background task {task_id}: Failed to auto-generate HTML report: {e}")
+                    # 报告生成失败不影响任务完成状态
+            else:
+                tasks_db[task_id]["status"] = "failed"
+                tasks_db[task_id]["message"] = f"JMeter execution failed: {stderr.decode()}"
+                logger.error(f"Background task {task_id}: JMeter execution failed: {stderr.decode()}")
+
+            tasks_db[task_id]["cost_time"] = f"{cost_time:.2f}s"
+            tasks_db[task_id]["completed_at"] = end_time.isoformat()
+            save_tasks_data(tasks_db)
+
+    except asyncio.TimeoutError:
+        logger.error(f"Background task {task_id}: JMeter execution timed out")
+        if task_id in tasks_db:
+            tasks_db[task_id]["status"] = "failed"
+            tasks_db[task_id]["message"] = "JMeter execution timed out (5 minutes)"
+            save_tasks_data(tasks_db)
+    except Exception as e:
+        logger.error(f"Background task {task_id}: JMeter execution error: {e}")
+        if task_id in tasks_db:
+            tasks_db[task_id]["status"] = "failed"
+            tasks_db[task_id]["message"] = f"JMeter execution error: {str(e)}"
+            save_tasks_data(tasks_db)
+
+
 @app.post("/execute")
 async def execute_jmx(request: ExecuteRequest):
     """执行JMX文件."""
     try:
-        import subprocess
 
         # 检查文件是否存在
         jmx_path = Path("jmx_files") / request.file_name
@@ -210,9 +365,24 @@ async def execute_jmx(request: ExecuteRequest):
                     break
 
         logger.info(f"JMeter availability check: {jmeter_available}")
+
+        # 创建任务记录，立即返回，在后台执行
+        task = {
+            "task_id": task_id,
+            "status": "pending",
+            "file_name": request.file_name,
+            "output_file": output_filename,
+            "cost_time": "0s",
+            "created_at": datetime.now().isoformat(),
+            "completed_at": None,
+        }
+
+        # 保存任务到内存
+        tasks_db[task_id] = task
+        save_tasks_data(tasks_db)
+
         if jmeter_available:
-            # 使用真实的JMeter执行
-            # 添加JTL配置参数确保生成正确格式的JTL文件
+            # 在后台启动JMeter执行，不等待结果
             command = [
                 "jmeter",
                 "-n",
@@ -226,21 +396,12 @@ async def execute_jmx(request: ExecuteRequest):
                 "-Jjmeter.save.saveservice.requestHeaders=false",
                 "-Jjmeter.save.saveservice.responseHeaders=false",
             ]
-            logger.info(f"Executing JMeter command: {' '.join(command)}")
+            logger.info(f"Starting JMeter command in background: {' '.join(command)}")
 
-            start_time = datetime.now()
-            result = subprocess.run(command, capture_output=True, text=True, timeout=300)
-            end_time = datetime.now()
+            # 启动后台任务
+            asyncio.create_task(execute_jmeter_background(task_id, command, output_path))
 
-            cost_time = (end_time - start_time).total_seconds()
-
-            if result.returncode == 0:
-                status = "completed"
-                message = "JMeter execution completed successfully"
-            else:
-                status = "failed"
-                message = f"JMeter execution failed: {result.stderr}"
-                logger.error(f"JMeter execution failed: {result.stderr}")
+            message = "JMeter execution started in background"
         else:
             # 模拟JMeter执行，创建虚拟JTL文件
             logger.warning("JMeter not found in system PATH, using dummy execution")
@@ -254,35 +415,14 @@ async def execute_jmx(request: ExecuteRequest):
                         int(datetime.now().timestamp() * 1000), int(datetime.now().timestamp() * 1000) + 1000
                     )
                 )
-            status = "completed"
+            # 对于模拟执行，立即标记为完成
+            tasks_db[task_id]["status"] = "completed"
+            tasks_db[task_id]["cost_time"] = "0.15s"
+            tasks_db[task_id]["completed_at"] = datetime.now().isoformat()
+            save_tasks_data(tasks_db)
             message = "JMeter execution completed (simulated - JMeter not found)"
-            cost_time = 0.15
 
-        # 记录任务
-        tasks_db[task_id] = {
-            "task_id": task_id,
-            "status": status,
-            "file_name": request.file_name,
-            "output_file": output_filename if status == "completed" else None,
-            "cost_time": f"{cost_time:.2f}s",
-            "created_at": datetime.utcnow().isoformat(),
-            "completed_at": datetime.utcnow().isoformat(),
-        }
-        save_tasks_data(tasks_db)
-
-        # 如果执行成功，自动生成HTML报告
-        if status == "completed" and output_filename:
-            try:
-                # 异步生成HTML报告
-                report_result = await generate_html_report(task_id)
-                if report_result.success:
-                    tasks_db[task_id]["report_path"] = report_result.data.get("report_path")
-                    save_tasks_data(tasks_db)  # 保存更新后的任务数据
-                    message += " (HTML report generated)"
-                    logger.info(f"HTML report auto-generated for task {task_id}")
-            except Exception as e:
-                logger.warning(f"Failed to auto-generate HTML report for task {task_id}: {e}")
-
+        # 立即返回任务信息，不等待完成
         return APIResponse(
             success=True,
             message=message,
@@ -290,9 +430,6 @@ async def execute_jmx(request: ExecuteRequest):
             timestamp=datetime.utcnow().isoformat(),
         )
 
-    except subprocess.TimeoutExpired:
-        logger.error("JMeter execution timeout")
-        return APIResponse(success=False, message="JMeter execution timed out", timestamp=datetime.utcnow().isoformat())
     except HTTPException:
         raise
     except Exception as e:
@@ -357,7 +494,7 @@ async def get_task_status(task_id: str):
 
 
 @app.get("/files")
-async def list_files(file_type: str = "jmx"):
+async def list_files(file_type: str = "jmx", search: Optional[str] = None):
     """列出文件."""
     try:
         if file_type == "jmx":
@@ -372,6 +509,14 @@ async def list_files(file_type: str = "jmx"):
         files = []
         for file_path in directory.glob(f"*{extension}"):
             if file_path.is_file():
+                # Apply search filter if search term is provided
+                if search and search.strip():
+                    search_term = search.strip().lower()
+                    filename_lower = file_path.name.lower()
+                    # Fuzzy search: check if search term is contained in filename
+                    if search_term not in filename_lower:
+                        continue
+
                 stat = file_path.stat()
                 files.append({"name": file_path.name, "size": stat.st_size, "modified": stat.st_mtime, "path": str(file_path)})
 

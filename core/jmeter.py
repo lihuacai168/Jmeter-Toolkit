@@ -86,7 +86,7 @@ class JMeterManager:
             "file_hash": file_hash,
         }
 
-    def execute_jmx_async(self, file_name: str) -> dict:
+    async def execute_jmx_async(self, file_name: str) -> dict:
         """Execute JMX file asynchronously using Celery."""
         # Find file record
         file_record = (

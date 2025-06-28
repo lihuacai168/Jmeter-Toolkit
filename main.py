@@ -440,7 +440,12 @@ async def get_task_status(task_id: str, jmeter_manager: Optional[JMeterManager] 
 
 
 @app.get("/files")
-async def list_files(file_type: FileTypeEnum, limit: int = Query(50, ge=1, le=100), offset: int = Query(0, ge=0)):
+async def list_files(
+    file_type: FileTypeEnum,
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    search: Optional[str] = Query(None, description="Search term for fuzzy filename matching"),
+):
     """List files by type."""
     try:
         if file_type == FileTypeEnum.jmx:
@@ -455,6 +460,14 @@ async def list_files(file_type: FileTypeEnum, limit: int = Query(50, ge=1, le=10
         files = []
         for file_path in directory.glob(f"*{extension}"):
             if file_path.is_file():
+                # Apply search filter if search term is provided
+                if search and search.strip():
+                    search_term = search.strip().lower()
+                    filename_lower = file_path.name.lower()
+                    # Fuzzy search: check if search term is contained in filename
+                    if search_term not in filename_lower:
+                        continue
+
                 stat = file_path.stat()
                 files.append({"name": file_path.name, "size": stat.st_size, "modified": stat.st_mtime, "path": str(file_path)})
 

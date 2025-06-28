@@ -59,15 +59,14 @@ const JmxUploader = ({ onUploadSuccess }: JmxUploaderProps) => {
 
     return (
         <div className="jmx-uploader">
-            <h2>Upload JMX File</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             {success && <Alert variant="success">{success}</Alert>}
             <Form>
-                <Form.Group controlId="formFile" className="mb-3">
+                <Form.Group controlId="formFile" className="mb-2">
                     <Form.Label>Select .jmx file</Form.Label>
                     <Form.Control type="file" accept=".jmx" onChange={handleFileChange} ref={fileInputRef} />
                 </Form.Group>
-                {progress > 0 && <ProgressBar now={progress} label={`${progress}%`} className="mb-3" />}
+                {progress > 0 && <ProgressBar now={progress} label={`${progress}%`} className="mb-2" />}
                 <Button variant="primary" onClick={handleUpload} disabled={!file}>
                     Upload
                 </Button>

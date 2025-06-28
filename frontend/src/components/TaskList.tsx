@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Alert, Spinner, Badge } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Button, Alert, Spinner, Badge, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -15,8 +15,13 @@ interface Task {
 
 const TaskList = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Filter states
+    const [fileNameSearch, setFileNameSearch] = useState<string>('');
+    const [statusFilter, setStatusFilter] = useState<string>('');
 
     const fetchTasks = async () => {
         try {
@@ -31,10 +36,54 @@ const TaskList = () => {
         }
     };
 
+    // Filter tasks based on search criteria
+    const filterTasks = useCallback(() => {
+        let filtered = tasks;
+
+        // Filter by file name (fuzzy search)
+        if (fileNameSearch.trim()) {
+            const searchTerm = fileNameSearch.trim().toLowerCase();
+            filtered = filtered.filter(task =>
+                task.file_name.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Filter by status (exact match)
+        if (statusFilter) {
+            filtered = filtered.filter(task =>
+                task.status.toLowerCase() === statusFilter.toLowerCase()
+            );
+        }
+
+        setFilteredTasks(filtered);
+    }, [tasks, fileNameSearch, statusFilter]);
+
+    // Apply filters when tasks or filter criteria change
+    useEffect(() => {
+        filterTasks();
+    }, [filterTasks]);
+
     useEffect(() => {
         fetchTasks();
         const interval = setInterval(fetchTasks, 5000); // Refresh every 5 seconds
         return () => clearInterval(interval);
+    }, []);
+
+    // Filter handlers
+    const handleFileNameSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setFileNameSearch(event.target.value);
+    }, []);
+
+    const handleStatusFilterChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+        setStatusFilter(event.target.value);
+    }, []);
+
+    const handleClearFileNameSearch = useCallback(() => {
+        setFileNameSearch('');
+    }, []);
+
+    const handleClearStatusFilter = useCallback(() => {
+        setStatusFilter('');
     }, []);
 
     const getStatusBadge = (status: string) => {
@@ -85,50 +134,111 @@ const TaskList = () => {
 
     return (
         <div className="task-list mt-5">
-            <h2>Tasks</h2>
-            <Button variant="secondary" onClick={fetchTasks} className="mb-3">Refresh Tasks</Button>
-            <Table striped bordered hover responsive>
+            <Row className="mb-2 align-items-center">
+                <Col md={2}>
+                    <h2 className="mb-0">Tasks</h2>
+                </Col>
+                <Col md={3}>
+                    <InputGroup size="sm">
+                        <Form.Control
+                            type="text"
+                            placeholder="Search file name..."
+                            value={fileNameSearch}
+                            onChange={handleFileNameSearchChange}
+                        />
+                        {fileNameSearch && (
+                            <Button
+                                variant="outline-secondary"
+                                onClick={handleClearFileNameSearch}
+                                style={{ borderLeft: 'none' }}
+                                title="Clear search"
+                            >
+                                ✕
+                            </Button>
+                        )}
+                    </InputGroup>
+                </Col>
+                <Col md={2}>
+                    <Form.Select size="sm" value={statusFilter} onChange={handleStatusFilterChange}>
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="running">Running</option>
+                        <option value="completed">Completed</option>
+                        <option value="failed">Failed</option>
+                    </Form.Select>
+                </Col>
+                <Col md={1}>
+                    {statusFilter && (
+                        <Button variant="outline-secondary" size="sm" onClick={handleClearStatusFilter} title="Clear status filter">
+                            ✕
+                        </Button>
+                    )}
+                </Col>
+                <Col md={2}>
+                    <Button variant="secondary" size="sm" onClick={fetchTasks}>Refresh Tasks</Button>
+                </Col>
+                <Col md={2}>
+                    <span className="text-muted">
+                        {filteredTasks.length} of {tasks.length} tasks
+                    </span>
+                </Col>
+            </Row>
+            <div style={{ height: '750px', overflowY: 'auto' }}>
+                <Table striped bordered hover style={{ width: '100%', tableLayout: 'fixed' }} className="mb-0">
                 <thead>
                     <tr>
-                        <th>Task ID</th>
-                        <th>File Name</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
+                        <th style={{ width: '15%' }}>Task ID</th>
+                        <th style={{ width: '30%' }}>File Name</th>
+                        <th style={{ width: '10%' }}>Status</th>
+                        <th style={{ width: '15%' }}>Created At</th>
+                        <th style={{ width: '30%' }}>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {tasks.length > 0 ? tasks.map(task => (
+                    {filteredTasks.length > 0 ? filteredTasks.map(task => (
                         <tr key={task.task_id}>
-                            <td>{task.task_id}</td>
-                            <td>{task.file_name}</td>
-                            <td>{getStatusBadge(task.status)}</td>
-                            <td>{new Date(task.created_at).toLocaleString()}</td>
-                            <td>
-                                {task.status.toLowerCase() === 'completed' && task.report_path && (
-                                    <>
-                                        <Button variant="primary" size="sm" href={`${API_URL}${task.report_path}`} target="_blank" className="me-2">
-                                            View Report
+                            <td
+                                style={{
+                                    width: '15%',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '0'
+                                }}
+                                title={task.task_id}
+                            >
+                                {task.task_id}
+                            </td>
+                            <td style={{ width: '30%' }}>{task.file_name}</td>
+                            <td style={{ width: '10%' }}>{getStatusBadge(task.status)}</td>
+                            <td style={{ width: '15%', whiteSpace: 'nowrap' }}>{new Date(task.created_at).toLocaleString()}</td>
+                            <td style={{ width: '30%' }}>
+                                <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '6px', fontSize: '0.875rem' }}>
+                                    {task.status.toLowerCase() === 'completed' && task.report_path && (
+                                        <>
+                                            <Button variant="primary" size="sm" href={`${API_URL}${task.report_path}`} target="_blank" style={{ minWidth: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>
+                                                View Report
+                                            </Button>
+                                            <Button variant="info" size="sm" onClick={() => handleDownloadReport(task.task_id)} style={{ minWidth: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>
+                                                Download Report
+                                            </Button>
+                                        </>
+                                    )}
+                                    {task.status.toLowerCase() === 'completed' && !task.report_path && (
+                                        <Button variant="warning" size="sm" onClick={() => handleGenerateReport(task.task_id)} style={{ minWidth: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>
+                                            Generate Report
                                         </Button>
-                                        <Button variant="info" size="sm" onClick={() => handleDownloadReport(task.task_id)} className="me-2">
-                                            Download Report
+                                    )}
+                                    {task.status.toLowerCase() === 'completed' && task.output_file && (
+                                        <Button variant="secondary" size="sm" onClick={() => {
+                                            if (task.output_file) {
+                                                handleDownloadJtl(task.output_file);
+                                            }
+                                        }} style={{ minWidth: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>
+                                            Download JTL
                                         </Button>
-                                    </>
-                                )}
-                                {task.status.toLowerCase() === 'completed' && !task.report_path && (
-                                    <Button variant="warning" size="sm" onClick={() => handleGenerateReport(task.task_id)} className="me-2">
-                                        Generate Report
-                                    </Button>
-                                )}
-                                {task.status.toLowerCase() === 'completed' && task.output_file && (
-                                    <Button variant="secondary" size="sm" onClick={() => {
-                                        if (task.output_file) {
-                                            handleDownloadJtl(task.output_file);
-                                        }
-                                    }}>
-                                        Download JTL
-                                    </Button>
-                                )}
+                                    )}
+                                </div>
                             </td>
                         </tr>
                     )) : (
@@ -138,6 +248,7 @@ const TaskList = () => {
                     )}
                 </tbody>
             </Table>
+            </div>
         </div>
     );
 };
