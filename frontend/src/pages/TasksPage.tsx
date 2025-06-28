@@ -3,7 +3,7 @@ import TaskList from '../components/TaskList';
 
 const TasksPage = () => {
     return (
-        <div>
+        <div style={{ width: '100%', padding: '1rem' }}>
             <TaskList />
         </div>
     );

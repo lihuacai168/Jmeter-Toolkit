@@ -11,6 +11,16 @@ jtl_files
 reports/*
 !reports/.gitkeep
 
+# Development data files
+dev_tasks.json
+dev_files.json
+dev_data.json
+
+# Database files
+*.db
+*.sqlite3
+dev_jmeter_toolkit.db
+
 # Frontend dependencies
 frontend/package-lock.json
 frontend/node_modules/
