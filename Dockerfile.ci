@@ -8,11 +8,14 @@ ENV ENVIRONMENT=development
 ENV DATABASE_URL=sqlite:///./ci_test.db
 ENV DEBUG=true
 
-# Install build dependencies and minimal dependencies
+# Install build dependencies and JMeter dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     gcc \
     python3-dev \
+    wget \
+    unzip \
+    openjdk-17-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 # Change the working directory to the `app` directory
@@ -36,17 +39,30 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.12-slim
 
+# Set environment variables for JMeter
+ENV JMETER_VERSION=5.6.3
+ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
+ENV PATH="${JMETER_HOME}/bin:/app/.venv/bin:$PATH"
+
 # Set environment variables for CI
 ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=development
 ENV DATABASE_URL=sqlite:///./ci_test.db
 ENV DEBUG=true
-ENV PATH="/app/.venv/bin:$PATH"
 
-# Install minimal dependencies
+# Install JMeter dependencies
 RUN apt-get update && apt-get install -y \
     curl \
+    wget \
+    unzip \
+    openjdk-17-jdk \
     && rm -rf /var/lib/apt/lists/*
+
+# Install JMeter
+RUN wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
+    && tar -xzf apache-jmeter-${JMETER_VERSION}.tgz -C /opt \
+    && rm apache-jmeter-${JMETER_VERSION}.tgz \
+    && chmod +x ${JMETER_HOME}/bin/jmeter
 
 # Copy the environment with all dependencies including pytest
 COPY --from=builder /app/.venv /app/.venv
@@ -63,12 +79,14 @@ RUN mkdir -p jmx_files jtl_files reports static templates
 # Create test database file
 RUN touch ci_test.db
 
-# Verify pytest installation with detailed logging
+# Verify installations with detailed logging
 RUN echo "🔍 Checking Python environment..." && \
     echo "Python version: $(python --version)" && \
     echo "Python path: $(which python)" && \
     echo "🔍 Checking virtual environment..." && \
     echo "Virtual env path: /app/.venv" && \
+    echo "🔍 Checking JMeter installation..." && \
+    jmeter --version && \
     echo "🔍 Listing installed packages..." && \
     uv pip list | grep -i pytest || echo "❌ No pytest packages found" && \
     echo "🔍 Checking pytest directly..." && \

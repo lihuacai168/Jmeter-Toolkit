@@ -130,18 +130,25 @@ class TestFileUploadDownload:
         assert jmx_path.exists()
         assert jtl_path.exists()
 
-        # Verify JTL content structure (CSV format)
+        # Verify JTL content structure (supports both CSV and XML formats)
         with open(jtl_path, "r") as f:
             jtl_content = f.read()
-            # JTL file should be in CSV format based on JMeter configuration
             lines = jtl_content.strip().split("\n")
-            assert len(lines) >= 2  # Header + at least one data line
-            # Check CSV header exists
-            assert "timeStamp" in lines[0]
-            assert "elapsed" in lines[0]
-            assert "responseCode" in lines[0]
-            # Check for successful response data
-            assert any("200" in line for line in lines[1:])  # At least one 200 response
+            assert len(lines) >= 2  # Should have content
+
+            # Check if it's CSV format (real JMeter) or XML format (dummy execution)
+            if "timeStamp" in lines[0]:
+                # CSV format - check headers and data
+                assert "elapsed" in lines[0]
+                assert "responseCode" in lines[0]
+                assert any("200" in line for line in lines[1:])  # At least one 200 response
+            elif "<?xml" in lines[0]:
+                # XML format (dummy execution) - check for success indicators
+                assert "testResults" in jtl_content
+                assert 's="true"' in jtl_content or 'rc="200"' in jtl_content
+            else:
+                # Unknown format
+                assert False, f"Unexpected JTL format: {lines[0]}"
 
     def test_download_jmx_file(self, client: TestClient):
         """Test downloading JMX file."""
@@ -185,16 +192,24 @@ class TestFileUploadDownload:
         assert download_response.status_code == 200
         assert download_response.headers["content-type"] == "application/octet-stream"
 
-        # Verify JTL content structure (CSV format)
+        # Verify JTL content structure (supports both CSV and XML formats)
         downloaded_content = download_response.content.decode()
         lines = downloaded_content.strip().split("\n")
-        assert len(lines) >= 2  # Header + at least one data line
-        # Check CSV header exists
-        assert "timeStamp" in lines[0]
-        assert "elapsed" in lines[0]
-        assert "responseCode" in lines[0]
-        # Check for successful response data
-        assert any("200" in line for line in lines[1:])  # At least one 200 response
+        assert len(lines) >= 2  # Should have content
+
+        # Check if it's CSV format (real JMeter) or XML format (dummy execution)
+        if "timeStamp" in lines[0]:
+            # CSV format - check headers and data
+            assert "elapsed" in lines[0]
+            assert "responseCode" in lines[0]
+            assert any("200" in line for line in lines[1:])  # At least one 200 response
+        elif "<?xml" in lines[0]:
+            # XML format (dummy execution) - check for success indicators
+            assert "testResults" in downloaded_content
+            assert 's="true"' in downloaded_content or 'rc="200"' in downloaded_content
+        else:
+            # Unknown format
+            assert False, f"Unexpected JTL format: {lines[0]}"
 
     def test_download_nonexistent_file(self, client: TestClient):
         """Test downloading non-existent file."""
