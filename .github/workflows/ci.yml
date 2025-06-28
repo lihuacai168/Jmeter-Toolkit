@@ -82,12 +82,14 @@ jobs:
         uv run pytest tests/ -v --cov=. --cov-report=xml --cov-report=term-missing --tb=short --ignore=tests/test_integration_execute.py
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4.0.1
       with:
+        slug: lihuacai168/jmeter_toolit
+        name: jmeter-toolkit-coverage
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
         flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
+        fail_ci_if_error: true
 
   lint:
     name: Code Quality
