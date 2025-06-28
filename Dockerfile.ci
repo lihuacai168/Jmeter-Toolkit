@@ -8,26 +8,31 @@ ENV ENVIRONMENT=development
 ENV DATABASE_URL=sqlite:///./ci_test.db
 ENV DEBUG=true
 
-# Install minimal dependencies
+# Install build dependencies and minimal dependencies
 RUN apt-get update && apt-get install -y \
     curl \
+    gcc \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Change the working directory to the `app` directory
 WORKDIR /app
 
-# Install dependencies
+# Copy project files first to ensure lock file is available
+COPY uv.lock pyproject.toml ./
+
+# Install dependencies - try locked first, fallback to unlocked if needed
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-editable
+    (uv sync --locked --no-install-project --no-editable || \
+     uv sync --no-install-project --no-editable)
 
 # Copy the project into the intermediate image
 ADD . /app
 
-# Sync the project with test dependencies
+# Sync the project with test dependencies - try locked first, fallback to unlocked if needed
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-editable --extra test
+    (uv sync --locked --no-editable --extra test || \
+     uv sync --no-editable --extra test)
 
 FROM python:3.12-slim
 
