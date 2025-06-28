@@ -66,13 +66,50 @@ for i in {1..5}; do
     sleep 5
 done
 
-# Check pytest availability
+# Check pytest availability with detailed debugging
 echo "🔍 Checking pytest availability..."
-if ! docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest --version > /dev/null 2>&1; then
-    echo "❌ pytest not available in container"
-    echo "📋 Available Python packages:"
-    docker-compose -f $COMPOSE_FILE exec -T ci-app pip list | grep -i pytest || echo "No pytest packages found"
-    exit 1
+echo "📋 Debugging Python environment in container..."
+
+# Check Python version and path
+echo "🔍 Python environment details:"
+docker-compose -f $COMPOSE_FILE exec -T ci-app python --version
+docker-compose -f $COMPOSE_FILE exec -T ci-app which python
+docker-compose -f $COMPOSE_FILE exec -T ci-app echo "PATH: $PATH"
+
+# Check virtual environment
+echo "🔍 Virtual environment status:"
+docker-compose -f $COMPOSE_FILE exec -T ci-app ls -la /app/.venv/bin/ | head -10 || echo "❌ .venv/bin not found"
+
+# List all installed packages
+echo "🔍 All installed packages:"
+docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pip list
+
+# Specifically check for pytest packages
+echo "🔍 Pytest-related packages:"
+docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pip list | grep -i pytest || echo "❌ No pytest packages found"
+
+# Try to import pytest directly
+echo "🔍 Testing pytest import:"
+if docker-compose -f $COMPOSE_FILE exec -T ci-app python -c "import pytest; print(f'✅ pytest version: {pytest.__version__}')"; then
+    echo "✅ pytest import successful"
+else
+    echo "❌ pytest import failed"
+fi
+
+# Check pytest command availability
+echo "🔍 Testing pytest command:"
+if docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest --version; then
+    echo "✅ pytest command available"
+else
+    echo "❌ pytest command failed"
+    echo "🔍 Attempting to install pytest manually..."
+    docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pip install pytest
+    if docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest --version; then
+        echo "✅ pytest manually installed and working"
+    else
+        echo "❌ Manual pytest installation failed"
+        exit 1
+    fi
 fi
 
 # Run core API tests
