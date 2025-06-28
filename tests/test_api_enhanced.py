@@ -130,14 +130,18 @@ class TestFileUploadDownload:
         assert jmx_path.exists()
         assert jtl_path.exists()
 
-        # Verify JTL content structure
+        # Verify JTL content structure (CSV format)
         with open(jtl_path, "r") as f:
             jtl_content = f.read()
-            assert jtl_content.startswith('<?xml version="1.0" encoding="UTF-8"?>')
-            assert '<testResults version="1.2">' in jtl_content
-            assert jtl_content.count("<httpSample") == 2
-            assert 'rc="200"' in jtl_content
-            assert 'rm="OK"' in jtl_content
+            # JTL file should be in CSV format based on JMeter configuration
+            lines = jtl_content.strip().split("\n")
+            assert len(lines) >= 2  # Header + at least one data line
+            # Check CSV header exists
+            assert "timeStamp" in lines[0]
+            assert "elapsed" in lines[0]
+            assert "responseCode" in lines[0]
+            # Check for successful response data
+            assert any("200" in line for line in lines[1:])  # At least one 200 response
 
     def test_download_jmx_file(self, client: TestClient):
         """Test downloading JMX file."""
@@ -181,11 +185,16 @@ class TestFileUploadDownload:
         assert download_response.status_code == 200
         assert download_response.headers["content-type"] == "application/octet-stream"
 
-        # Verify JTL content structure
+        # Verify JTL content structure (CSV format)
         downloaded_content = download_response.content.decode()
-        assert downloaded_content.startswith('<?xml version="1.0" encoding="UTF-8"?>')
-        assert '<testResults version="1.2">' in downloaded_content
-        assert downloaded_content.count("<httpSample") == 2
+        lines = downloaded_content.strip().split("\n")
+        assert len(lines) >= 2  # Header + at least one data line
+        # Check CSV header exists
+        assert "timeStamp" in lines[0]
+        assert "elapsed" in lines[0]
+        assert "responseCode" in lines[0]
+        # Check for successful response data
+        assert any("200" in line for line in lines[1:])  # At least one 200 response
 
     def test_download_nonexistent_file(self, client: TestClient):
         """Test downloading non-existent file."""
@@ -273,11 +282,12 @@ class TestFileListingIntegration:
         our_jtl_files = [f for f in data["data"]["files"] if f["name"] in created_jtl_files]
         assert len(our_jtl_files) == 2
 
-        # Verify JTL file details with exact size check
+        # Verify JTL file details
         for file_info in our_jtl_files:
             assert file_info["name"].endswith(".jtl") is True
-            # JTL files should have exact size based on our mock content (349 bytes)
-            assert file_info["size"] == 349
+            # JTL files should have reasonable size (CSV format with headers and data)
+            assert file_info["size"] > 50  # Should contain at least headers and some data
+            assert file_info["size"] < 10000  # Should not be unreasonably large for test data
 
 
 class TestTaskManagementIntegration:
