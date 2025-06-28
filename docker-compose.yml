@@ -36,7 +36,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.pip
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -66,7 +66,7 @@ services:
   celery-worker:
     build:
       context: .
-      dockerfile: Dockerfile.pip
+      dockerfile: Dockerfile
     command: celery -A utils.celery_app worker --loglevel=info --concurrency=2
     environment:
       - DATABASE_URL=postgresql://jmeter:jmeter@postgres:5432/jmeter_toolkit
@@ -94,7 +94,7 @@ services:
   celery-beat:
     build:
       context: .
-      dockerfile: Dockerfile.pip
+      dockerfile: Dockerfile
     command: celery -A utils.celery_app beat --loglevel=info
     environment:
       - DATABASE_URL=postgresql://jmeter:jmeter@postgres:5432/jmeter_toolkit
@@ -116,7 +116,7 @@ services:
   flower:
     build:
       context: .
-      dockerfile: Dockerfile.pip
+      dockerfile: Dockerfile
     command: celery -A utils.celery_app flower --port=5555
     ports:
       - "5555:5555"
