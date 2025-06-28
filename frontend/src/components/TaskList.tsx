@@ -187,19 +187,21 @@ const TaskList = () => {
                 <Table striped bordered hover style={{ width: '100%', tableLayout: 'fixed' }} className="mb-0">
                 <thead>
                     <tr>
-                        <th style={{ width: '15%' }}>Task ID</th>
-                        <th style={{ width: '30%' }}>File Name</th>
+                        <th style={{ width: '2%' }}>ID</th>
+                        <th style={{ width: '13%' }}>Task ID</th>
+                        <th style={{ width: '25%' }}>File Name</th>
                         <th style={{ width: '10%' }}>Status</th>
-                        <th style={{ width: '15%' }}>Created At</th>
+                        <th style={{ width: '20%' }}>Created At</th>
                         <th style={{ width: '30%' }}>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredTasks.length > 0 ? filteredTasks.map(task => (
+                    {filteredTasks.length > 0 ? filteredTasks.map((task, index) => (
                         <tr key={task.task_id}>
+                            <td style={{ width: '2%', textAlign: 'center' }}>{index + 1}</td>
                             <td
                                 style={{
-                                    width: '15%',
+                                    width: '13%',
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
@@ -209,9 +211,20 @@ const TaskList = () => {
                             >
                                 {task.task_id}
                             </td>
-                            <td style={{ width: '30%' }}>{task.file_name}</td>
+                            <td
+                                style={{
+                                    width: '25%',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '0'
+                                }}
+                                title={task.file_name}
+                            >
+                                {task.file_name}
+                            </td>
                             <td style={{ width: '10%' }}>{getStatusBadge(task.status)}</td>
-                            <td style={{ width: '15%', whiteSpace: 'nowrap' }}>{new Date(task.created_at).toLocaleString()}</td>
+                            <td style={{ width: '20%', whiteSpace: 'nowrap' }}>{new Date(task.created_at).toLocaleString()}</td>
                             <td style={{ width: '30%' }}>
                                 <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '6px', fontSize: '0.875rem' }}>
                                     {task.status.toLowerCase() === 'completed' && task.report_path && (
@@ -243,7 +256,7 @@ const TaskList = () => {
                         </tr>
                     )) : (
                         <tr>
-                            <td colSpan={5} className="text-center">No tasks found.</td>
+                            <td colSpan={6} className="text-center">No tasks found.</td>
                         </tr>
                     )}
                 </tbody>
