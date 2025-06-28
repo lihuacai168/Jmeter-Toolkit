@@ -9,7 +9,6 @@ from typing import Optional
 import yaml
 from fastapi import HTTPException, UploadFile
 from loguru import logger
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from config import settings
@@ -18,14 +17,14 @@ from utils.security import FileValidator, generate_file_hash, generate_secure_fi
 from utils.tasks import execute_jmeter_task, generate_html_report_task
 
 
-class RunCmdResp(BaseModel):
+class RunCmdResp:
     pid: int
     stdout: str
     stderr: str
     returncode: int
 
 
-class ExecuteJmxResponse(BaseModel):
+class ExecuteJmxResponse:
     output_file_path: str
     cost_time: str
     status: str

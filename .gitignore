@@ -8,6 +8,12 @@ __pycache__/
 *.pyc
 jmx_files
 jtl_files
+reports/*
+!reports/.gitkeep
+
+# Frontend dependencies
+frontend/package-lock.json
+frontend/node_modules/
 
 # C extensions
 *.so

@@ -1,0 +1,23 @@
+{
+  "tasks": {
+    "8c8f1353-9c3c-4473-a8ab-3102693071e1": {
+      "status": "completed",
+      "file_name": "simple_test.jmx",
+      "output_file": "simple_test_20250628_165240.jtl",
+      "cost_time": "0.15s",
+      "created_at": "2025-06-28T08:52:40.449456",
+      "completed_at": "2025-06-28T08:52:40.449463",
+      "task_id": "8c8f1353-9c3c-4473-a8ab-3102693071e1"
+    },
+    "2609c0b6-406b-438c-91f7-5fb78ae489a5": {
+      "status": "completed",
+      "file_name": "simple_test.jmx",
+      "output_file": "simple_test_20250628_165257.jtl",
+      "cost_time": "0.15s",
+      "created_at": "2025-06-28T08:52:57.978837",
+      "completed_at": "2025-06-28T08:52:57.978845",
+      "task_id": "2609c0b6-406b-438c-91f7-5fb78ae489a5"
+    }
+  },
+  "files": {}
+}

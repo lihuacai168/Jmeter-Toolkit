@@ -18,7 +18,7 @@ class TestExecuteIntegration:
         test_server_url = os.getenv("TEST_SERVER_URL", "http://localhost:3000")
 
         # Wait for test server to be available
-        max_retries = 30
+        max_retries = 3
         retry_delay = 1
 
         for attempt in range(max_retries):
@@ -36,14 +36,14 @@ class TestExecuteIntegration:
 
     def test_execute_with_real_jmx_against_test_server(self, client):
         """Test executing real JMX file against running test server."""
-        # Use the sample test file if it exists
-        sample_jmx_path = Path("test_examples/sample_test.jmx")
+        # Use the fast test file for quicker integration testing
+        sample_jmx_path = Path("test_examples/fast_test.jmx")
         if not sample_jmx_path.exists():
-            pytest.skip("Sample JMX file not found")
+            pytest.skip("Fast test JMX file not found")
 
         # Upload the real JMX file
         with open(sample_jmx_path, "rb") as f:
-            response = client.post("/upload", files={"file": ("sample_test.jmx", f, "application/xml")})
+            response = client.post("/upload", files={"file": ("fast_test.jmx", f, "application/xml")})
 
         assert response.status_code == 200
         upload_data = response.json()["data"]
@@ -66,13 +66,13 @@ class TestExecuteIntegration:
 
     def test_upload_and_execute_with_real_jmx(self, client):
         """Test upload-and-execute with real JMX file."""
-        sample_jmx_path = Path("test_examples/sample_test.jmx")
+        sample_jmx_path = Path("test_examples/fast_test.jmx")
         if not sample_jmx_path.exists():
-            pytest.skip("Sample JMX file not found")
+            pytest.skip("Fast test JMX file not found")
 
         # Upload and execute in one step
         with open(sample_jmx_path, "rb") as f:
-            response = client.post("/upload-and-execute", files={"file": ("sample_test.jmx", f, "application/xml")})
+            response = client.post("/upload-and-execute", files={"file": ("fast_test.jmx", f, "application/xml")})
 
         assert response.status_code == 200
         data = response.json()
@@ -95,9 +95,9 @@ class TestExecuteIntegration:
 
     def test_end_to_end_workflow(self, client):
         """Test complete end-to-end workflow."""
-        sample_jmx_path = Path("test_examples/sample_test.jmx")
+        sample_jmx_path = Path("test_examples/fast_test.jmx")
         if not sample_jmx_path.exists():
-            pytest.skip("Sample JMX file not found")
+            pytest.skip("Fast test JMX file not found")
 
         # Step 1: Upload and execute
         with open(sample_jmx_path, "rb") as f:

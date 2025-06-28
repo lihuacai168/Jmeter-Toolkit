@@ -1,0 +1,1074 @@
+{
+  "7359211b-3b2b-4c07-8b39-6bcfb876bbdf": {
+    "id": "7359211b-3b2b-4c07-8b39-6bcfb876bbdf",
+    "original_name": "test_plan.jmx",
+    "stored_name": "test_plan_20250628_185217.jmx",
+    "file_path": "jmx_files/test_plan_20250628_185217.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:17.698279"
+  },
+  "098c5308-1c9e-4295-a209-b35c4285359b": {
+    "id": "098c5308-1c9e-4295-a209-b35c4285359b",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_185217.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_185217.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:17.703574"
+  },
+  "065fa6d5-c5d5-4b2d-89a9-e0dae1c327b4": {
+    "id": "065fa6d5-c5d5-4b2d-89a9-e0dae1c327b4",
+    "original_name": "test_download.jmx",
+    "stored_name": "test_download_20250628_185222.jmx",
+    "file_path": "jmx_files/test_download_20250628_185222.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:22.029990"
+  },
+  "3b354e67-106f-4586-aab3-9e9ec85fd0a8": {
+    "id": "3b354e67-106f-4586-aab3-9e9ec85fd0a8",
+    "original_name": "test_jtl_download.jmx",
+    "stored_name": "test_jtl_download_20250628_185222.jmx",
+    "file_path": "jmx_files/test_jtl_download_20250628_185222.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:22.034143"
+  },
+  "a783e48a-8439-4a1b-bc43-f0398999ec13": {
+    "id": "a783e48a-8439-4a1b-bc43-f0398999ec13",
+    "original_name": "test_list_cba3dffc_0.jmx",
+    "stored_name": "test_list_cba3dffc_0_20250628_185227.jmx",
+    "file_path": "jmx_files/test_list_cba3dffc_0_20250628_185227.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:27.063741"
+  },
+  "568b52b5-9a7e-4e24-bf8a-0f1f0df7c063": {
+    "id": "568b52b5-9a7e-4e24-bf8a-0f1f0df7c063",
+    "original_name": "test_list_cba3dffc_1.jmx",
+    "stored_name": "test_list_cba3dffc_1_20250628_185227.jmx",
+    "file_path": "jmx_files/test_list_cba3dffc_1_20250628_185227.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:27.064812"
+  },
+  "4eb9e433-e348-4bc4-a275-5ac67bff558a": {
+    "id": "4eb9e433-e348-4bc4-a275-5ac67bff558a",
+    "original_name": "test_list_cba3dffc_2.jmx",
+    "stored_name": "test_list_cba3dffc_2_20250628_185227.jmx",
+    "file_path": "jmx_files/test_list_cba3dffc_2_20250628_185227.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:27.065768"
+  },
+  "1b0e0366-f15a-4251-964e-4f6114b2c9a3": {
+    "id": "1b0e0366-f15a-4251-964e-4f6114b2c9a3",
+    "original_name": "test_exec_be64bf82_0.jmx",
+    "stored_name": "test_exec_be64bf82_0_20250628_185227.jmx",
+    "file_path": "jmx_files/test_exec_be64bf82_0_20250628_185227.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:27.082165"
+  },
+  "f5d0b097-bdd6-430c-8b5b-90eb48c2585c": {
+    "id": "f5d0b097-bdd6-430c-8b5b-90eb48c2585c",
+    "original_name": "test_exec_be64bf82_1.jmx",
+    "stored_name": "test_exec_be64bf82_1_20250628_185231.jmx",
+    "file_path": "jmx_files/test_exec_be64bf82_1_20250628_185231.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:31.732198"
+  },
+  "4e535ad6-621b-4e18-9247-758ff58edc7a": {
+    "id": "4e535ad6-621b-4e18-9247-758ff58edc7a",
+    "original_name": "test_task.jmx",
+    "stored_name": "test_task_20250628_185237.jmx",
+    "file_path": "jmx_files/test_task_20250628_185237.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:37.823353"
+  },
+  "521c754c-6bf0-4115-bb16-d2aee5abb405": {
+    "id": "521c754c-6bf0-4115-bb16-d2aee5abb405",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_185242.jmx",
+    "file_path": "jmx_files/empty_20250628_185242.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T10:52:42.499631"
+  },
+  "f87bb628-3e55-484f-9ea7-8830a556735c": {
+    "id": "f87bb628-3e55-484f-9ea7-8830a556735c",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_185242.jmx",
+    "file_path": "jmx_files/large_test_20250628_185242.jmx",
+    "file_size": 299000,
+    "uploaded_at": "2025-06-28T10:52:42.503031"
+  },
+  "79c6f0cd-f4b8-4974-83f2-8d23b29e8a78": {
+    "id": "79c6f0cd-f4b8-4974-83f2-8d23b29e8a78",
+    "original_name": "test file with spaces & symbols!.jmx",
+    "stored_name": "test file with spaces & symbols!_20250628_185242.jmx",
+    "file_path": "jmx_files/test file with spaces & symbols!_20250628_185242.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T10:52:42.509593"
+  },
+  "e4db6dae-0824-441b-858b-adb9ed853963": {
+    "id": "e4db6dae-0824-441b-858b-adb9ed853963",
+    "original_name": "test_upload.jmx",
+    "stored_name": "test_upload_20250628_185242.jmx",
+    "file_path": "jmx_files/test_upload_20250628_185242.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T10:52:42.513772"
+  },
+  "8cb1587c-cfd9-4e7b-94e5-901f95ff5885": {
+    "id": "8cb1587c-cfd9-4e7b-94e5-901f95ff5885",
+    "original_name": "test_upload_execute.jmx",
+    "stored_name": "test_upload_execute_20250628_185246.jmx",
+    "file_path": "jmx_files/test_upload_execute_20250628_185246.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T10:52:46.981085"
+  },
+  "7988b989-ed00-41f4-8cb4-3c918b97c0e9": {
+    "id": "7988b989-ed00-41f4-8cb4-3c918b97c0e9",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_185251.jmx",
+    "file_path": "jmx_files/empty_20250628_185251.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T10:52:51.363996"
+  },
+  "42b48bbf-bd5d-4725-ae82-abee36265936": {
+    "id": "42b48bbf-bd5d-4725-ae82-abee36265936",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_185252.jmx",
+    "file_path": "jmx_files/large_test_20250628_185252.jmx",
+    "file_size": 23890,
+    "uploaded_at": "2025-06-28T10:52:52.021498"
+  },
+  "fef1f02c-7f79-4196-8790-95437f9c4b31": {
+    "id": "fef1f02c-7f79-4196-8790-95437f9c4b31",
+    "original_name": "test_case.jmx",
+    "stored_name": "test_case_20250628_185330.jmx",
+    "file_path": "jmx_files/test_case_20250628_185330.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T10:53:30.248406"
+  },
+  "1a549570-9a72-48d6-960e-10945fb62366": {
+    "id": "1a549570-9a72-48d6-960e-10945fb62366",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_185330.jmx",
+    "file_path": "jmx_files/same_name_20250628_185330.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T10:53:30.256673"
+  },
+  "da1848df-c453-4997-8df1-34c9aaf3fea5": {
+    "id": "da1848df-c453-4997-8df1-34c9aaf3fea5",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_185330.jmx",
+    "file_path": "jmx_files/same_name_20250628_185330.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T10:53:30.363943"
+  },
+  "e3b6ac7a-2416-4059-967b-a49024c9617b": {
+    "id": "e3b6ac7a-2416-4059-967b-a49024c9617b",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_185330.jmx",
+    "file_path": "jmx_files/same_name_20250628_185330.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T10:53:30.471238"
+  },
+  "30fdbb7e-5b89-45cb-991f-29b5bf10ff00": {
+    "id": "30fdbb7e-5b89-45cb-991f-29b5bf10ff00",
+    "original_name": "sample_test.jmx",
+    "stored_name": "sample_test_20250628_185330.jmx",
+    "file_path": "jmx_files/sample_test_20250628_185330.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T10:53:30.668914"
+  },
+  "df8af784-bd52-4d03-8916-72e127e035af": {
+    "id": "df8af784-bd52-4d03-8916-72e127e035af",
+    "original_name": "sample_test.jmx",
+    "stored_name": "sample_test_20250628_185430.jmx",
+    "file_path": "jmx_files/sample_test_20250628_185430.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T10:54:30.883596"
+  },
+  "95d4372a-3fc0-4064-a3a1-2310fedbf043": {
+    "id": "95d4372a-3fc0-4064-a3a1-2310fedbf043",
+    "original_name": "e2e_test.jmx",
+    "stored_name": "e2e_test_20250628_185528.jmx",
+    "file_path": "jmx_files/e2e_test_20250628_185528.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T10:55:28.422145"
+  },
+  "f07c3eeb-23ba-4d76-ab7a-023b3bde8a7e": {
+    "id": "f07c3eeb-23ba-4d76-ab7a-023b3bde8a7e",
+    "original_name": "perf_test.jmx",
+    "stored_name": "perf_test_20250628_185626.jmx",
+    "file_path": "jmx_files/perf_test_20250628_185626.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:26.540287"
+  },
+  "e92dbeb8-b6b6-489c-94e4-3e6f369440ed": {
+    "id": "e92dbeb8-b6b6-489c-94e4-3e6f369440ed",
+    "original_name": "perf_execute.jmx",
+    "stored_name": "perf_execute_20250628_185626.jmx",
+    "file_path": "jmx_files/perf_execute_20250628_185626.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:26.542783"
+  },
+  "2a1d80c8-96a9-4fb8-b375-f5b52fa537ba": {
+    "id": "2a1d80c8-96a9-4fb8-b375-f5b52fa537ba",
+    "original_name": "perf_upload_execute.jmx",
+    "stored_name": "perf_upload_execute_20250628_185629.jmx",
+    "file_path": "jmx_files/perf_upload_execute_20250628_185629.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:29.516649"
+  },
+  "f151cf0e-fbd2-4306-a22c-8e590bc641a7": {
+    "id": "f151cf0e-fbd2-4306-a22c-8e590bc641a7",
+    "original_name": "concurrent_2.jmx",
+    "stored_name": "concurrent_2_20250628_185632.jmx",
+    "file_path": "jmx_files/concurrent_2_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.455210"
+  },
+  "c8b1b62b-8d55-4cef-bd0b-21f20cf02449": {
+    "id": "c8b1b62b-8d55-4cef-bd0b-21f20cf02449",
+    "original_name": "concurrent_0.jmx",
+    "stored_name": "concurrent_0_20250628_185632.jmx",
+    "file_path": "jmx_files/concurrent_0_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.456019"
+  },
+  "bf6ca550-0c26-4ada-a429-ad5887f255a8": {
+    "id": "bf6ca550-0c26-4ada-a429-ad5887f255a8",
+    "original_name": "concurrent_1.jmx",
+    "stored_name": "concurrent_1_20250628_185632.jmx",
+    "file_path": "jmx_files/concurrent_1_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.456699"
+  },
+  "4c6c4864-4f8f-4ae7-a69d-20355e812426": {
+    "id": "4c6c4864-4f8f-4ae7-a69d-20355e812426",
+    "original_name": "concurrent_3.jmx",
+    "stored_name": "concurrent_3_20250628_185632.jmx",
+    "file_path": "jmx_files/concurrent_3_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.457302"
+  },
+  "f58aca7e-edd7-4164-a3e7-d85401f39f7c": {
+    "id": "f58aca7e-edd7-4164-a3e7-d85401f39f7c",
+    "original_name": "concurrent_4.jmx",
+    "stored_name": "concurrent_4_20250628_185632.jmx",
+    "file_path": "jmx_files/concurrent_4_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.457894"
+  },
+  "19ae7ee5-bddb-4001-be2e-96a5ec331cfe": {
+    "id": "19ae7ee5-bddb-4001-be2e-96a5ec331cfe",
+    "original_name": "exec_0.jmx",
+    "stored_name": "exec_0_20250628_185632.jmx",
+    "file_path": "jmx_files/exec_0_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.460411"
+  },
+  "e5bb13f9-5ea7-44ab-863b-c30c4ef3c8b2": {
+    "id": "e5bb13f9-5ea7-44ab-863b-c30c4ef3c8b2",
+    "original_name": "exec_1.jmx",
+    "stored_name": "exec_1_20250628_185632.jmx",
+    "file_path": "jmx_files/exec_1_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.461243"
+  },
+  "9fc5a653-0fca-43a3-a4fa-01d1824819bc": {
+    "id": "9fc5a653-0fca-43a3-a4fa-01d1824819bc",
+    "original_name": "exec_2.jmx",
+    "stored_name": "exec_2_20250628_185632.jmx",
+    "file_path": "jmx_files/exec_2_20250628_185632.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:32.462029"
+  },
+  "4f1c7486-4438-421d-b6a8-60c262d2ad00": {
+    "id": "4f1c7486-4438-421d-b6a8-60c262d2ad00",
+    "original_name": "large_file.jmx",
+    "stored_name": "large_file_20250628_185641.jmx",
+    "file_path": "jmx_files/large_file_20250628_185641.jmx",
+    "file_size": 78100,
+    "uploaded_at": "2025-06-28T10:56:41.302492"
+  },
+  "11fb3069-cc18-45b1-8f68-531d97f2aaf2": {
+    "id": "11fb3069-cc18-45b1-8f68-531d97f2aaf2",
+    "original_name": "memory_test_0.jmx",
+    "stored_name": "memory_test_0_20250628_185641.jmx",
+    "file_path": "jmx_files/memory_test_0_20250628_185641.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:41.305320"
+  },
+  "c5769df6-d487-45ff-99a7-feb9ecb7b4b4": {
+    "id": "c5769df6-d487-45ff-99a7-feb9ecb7b4b4",
+    "original_name": "memory_test_1.jmx",
+    "stored_name": "memory_test_1_20250628_185644.jmx",
+    "file_path": "jmx_files/memory_test_1_20250628_185644.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:44.270770"
+  },
+  "c432e22e-7386-45ca-af59-600362137828": {
+    "id": "c432e22e-7386-45ca-af59-600362137828",
+    "original_name": "memory_test_2.jmx",
+    "stored_name": "memory_test_2_20250628_185647.jmx",
+    "file_path": "jmx_files/memory_test_2_20250628_185647.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:47.267081"
+  },
+  "fd9cd226-d5e3-445c-aa0f-332ef7b2e7be": {
+    "id": "fd9cd226-d5e3-445c-aa0f-332ef7b2e7be",
+    "original_name": "memory_test_3.jmx",
+    "stored_name": "memory_test_3_20250628_185650.jmx",
+    "file_path": "jmx_files/memory_test_3_20250628_185650.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:50.187630"
+  },
+  "978365b1-97df-4dd2-b7d0-de5c9e336b8a": {
+    "id": "978365b1-97df-4dd2-b7d0-de5c9e336b8a",
+    "original_name": "memory_test_4.jmx",
+    "stored_name": "memory_test_4_20250628_185653.jmx",
+    "file_path": "jmx_files/memory_test_4_20250628_185653.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:53.200328"
+  },
+  "f539eac8-fced-4e83-8781-6580cb7fab03": {
+    "id": "f539eac8-fced-4e83-8781-6580cb7fab03",
+    "original_name": "memory_test_5.jmx",
+    "stored_name": "memory_test_5_20250628_185656.jmx",
+    "file_path": "jmx_files/memory_test_5_20250628_185656.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:56.206843"
+  },
+  "b919e00e-b2b7-42c5-91a1-61ce53f41007": {
+    "id": "b919e00e-b2b7-42c5-91a1-61ce53f41007",
+    "original_name": "memory_test_6.jmx",
+    "stored_name": "memory_test_6_20250628_185659.jmx",
+    "file_path": "jmx_files/memory_test_6_20250628_185659.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:56:59.169273"
+  },
+  "c7a7e341-50a3-4467-965d-98f6f94fd85f": {
+    "id": "c7a7e341-50a3-4467-965d-98f6f94fd85f",
+    "original_name": "memory_test_7.jmx",
+    "stored_name": "memory_test_7_20250628_185702.jmx",
+    "file_path": "jmx_files/memory_test_7_20250628_185702.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:57:02.137592"
+  },
+  "3c8140f0-1290-4425-b53e-47ec0b5149f2": {
+    "id": "3c8140f0-1290-4425-b53e-47ec0b5149f2",
+    "original_name": "memory_test_8.jmx",
+    "stored_name": "memory_test_8_20250628_185705.jmx",
+    "file_path": "jmx_files/memory_test_8_20250628_185705.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:57:05.079721"
+  },
+  "2565c8b2-2738-4ada-8fb0-14aa1babae62": {
+    "id": "2565c8b2-2738-4ada-8fb0-14aa1babae62",
+    "original_name": "memory_test_9.jmx",
+    "stored_name": "memory_test_9_20250628_185707.jmx",
+    "file_path": "jmx_files/memory_test_9_20250628_185707.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:57:07.961089"
+  },
+  "f03eeab2-5036-4f00-8886-e73dd3ebfe28": {
+    "id": "f03eeab2-5036-4f00-8886-e73dd3ebfe28",
+    "original_name": "final_test.jmx",
+    "stored_name": "final_test_20250628_185711.jmx",
+    "file_path": "jmx_files/final_test_20250628_185711.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:57:11.051357"
+  },
+  "72182b29-93ff-42c1-b2b6-8bc3eba10809": {
+    "id": "72182b29-93ff-42c1-b2b6-8bc3eba10809",
+    "original_name": "api_perf_test.jmx",
+    "stored_name": "api_perf_test_20250628_185714.jmx",
+    "file_path": "jmx_files/api_perf_test_20250628_185714.jmx",
+    "file_size": 781,
+    "uploaded_at": "2025-06-28T10:57:14.087557"
+  },
+  "d066c8e3-ce91-47f0-939b-082e82462399": {
+    "id": "d066c8e3-ce91-47f0-939b-082e82462399",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_190149.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_190149.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:01:49.265153"
+  },
+  "950e2e03-638e-436f-a51b-aa7f1e9bad7d": {
+    "id": "950e2e03-638e-436f-a51b-aa7f1e9bad7d",
+    "original_name": "test_jtl_download.jmx",
+    "stored_name": "test_jtl_download_20250628_190200.jmx",
+    "file_path": "jmx_files/test_jtl_download_20250628_190200.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:02:00.671169"
+  },
+  "fc1d4545-752e-427f-a2ae-ab9afff9c3b6": {
+    "id": "fc1d4545-752e-427f-a2ae-ab9afff9c3b6",
+    "original_name": "test_exec_11e424c3_0.jmx",
+    "stored_name": "test_exec_11e424c3_0_20250628_190211.jmx",
+    "file_path": "jmx_files/test_exec_11e424c3_0_20250628_190211.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:02:11.426905"
+  },
+  "baa1dbb4-877e-4905-be8b-56921f014b92": {
+    "id": "baa1dbb4-877e-4905-be8b-56921f014b92",
+    "original_name": "test_exec_11e424c3_1.jmx",
+    "stored_name": "test_exec_11e424c3_1_20250628_190216.jmx",
+    "file_path": "jmx_files/test_exec_11e424c3_1_20250628_190216.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:02:16.361923"
+  },
+  "7160e646-77de-40f6-b3d0-1fcd27400ee5": {
+    "id": "7160e646-77de-40f6-b3d0-1fcd27400ee5",
+    "original_name": "test_exec_11ad6852_0.jmx",
+    "stored_name": "test_exec_11ad6852_0_20250628_190243.jmx",
+    "file_path": "jmx_files/test_exec_11ad6852_0_20250628_190243.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:02:43.035798"
+  },
+  "4a9a73a0-c49b-4ecb-81b6-0cc42480512b": {
+    "id": "4a9a73a0-c49b-4ecb-81b6-0cc42480512b",
+    "original_name": "test_exec_11ad6852_1.jmx",
+    "stored_name": "test_exec_11ad6852_1_20250628_190247.jmx",
+    "file_path": "jmx_files/test_exec_11ad6852_1_20250628_190247.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:02:47.485052"
+  },
+  "12dccd1a-4233-43ec-83a7-3cd660730e7c": {
+    "id": "12dccd1a-4233-43ec-83a7-3cd660730e7c",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_190310.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_190310.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:03:10.135832"
+  },
+  "0f0b61d3-247d-47c6-b4e4-93f118a38931": {
+    "id": "0f0b61d3-247d-47c6-b4e4-93f118a38931",
+    "original_name": "test_jtl_download.jmx",
+    "stored_name": "test_jtl_download_20250628_190315.jmx",
+    "file_path": "jmx_files/test_jtl_download_20250628_190315.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:03:15.294707"
+  },
+  "d1c99423-6c3f-462c-9467-9d490ae2524b": {
+    "id": "d1c99423-6c3f-462c-9467-9d490ae2524b",
+    "original_name": "test_exec_16b2320c_0.jmx",
+    "stored_name": "test_exec_16b2320c_0_20250628_190322.jmx",
+    "file_path": "jmx_files/test_exec_16b2320c_0_20250628_190322.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:03:22.359862"
+  },
+  "dc48929b-3a42-42dd-b3dc-10b414c434ac": {
+    "id": "dc48929b-3a42-42dd-b3dc-10b414c434ac",
+    "original_name": "test_exec_16b2320c_1.jmx",
+    "stored_name": "test_exec_16b2320c_1_20250628_190326.jmx",
+    "file_path": "jmx_files/test_exec_16b2320c_1_20250628_190326.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:03:26.867608"
+  },
+  "67f47d95-4946-47f8-99e9-b1cec4db5f18": {
+    "id": "67f47d95-4946-47f8-99e9-b1cec4db5f18",
+    "original_name": "test_plan.jmx",
+    "stored_name": "test_plan_20250628_190452.jmx",
+    "file_path": "jmx_files/test_plan_20250628_190452.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:04:52.311956"
+  },
+  "bbecce2a-8bb8-4b3d-a705-d4b7ba84a0da": {
+    "id": "bbecce2a-8bb8-4b3d-a705-d4b7ba84a0da",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_190452.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_190452.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:04:52.317660"
+  },
+  "b3a5043f-c18a-4000-a13b-86b0d2b8ad48": {
+    "id": "b3a5043f-c18a-4000-a13b-86b0d2b8ad48",
+    "original_name": "test_download.jmx",
+    "stored_name": "test_download_20250628_190456.jmx",
+    "file_path": "jmx_files/test_download_20250628_190456.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:04:56.750863"
+  },
+  "518689ee-8d53-42b5-8f0c-529e3696bd7b": {
+    "id": "518689ee-8d53-42b5-8f0c-529e3696bd7b",
+    "original_name": "test_jtl_download.jmx",
+    "stored_name": "test_jtl_download_20250628_190456.jmx",
+    "file_path": "jmx_files/test_jtl_download_20250628_190456.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:04:56.755752"
+  },
+  "b100109a-6876-48d1-8c25-32b9c332584f": {
+    "id": "b100109a-6876-48d1-8c25-32b9c332584f",
+    "original_name": "test_list_1700b584_0.jmx",
+    "stored_name": "test_list_1700b584_0_20250628_190501.jmx",
+    "file_path": "jmx_files/test_list_1700b584_0_20250628_190501.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:01.188876"
+  },
+  "a8374a91-3369-4ec9-a2ea-12e72dc21268": {
+    "id": "a8374a91-3369-4ec9-a2ea-12e72dc21268",
+    "original_name": "test_list_1700b584_1.jmx",
+    "stored_name": "test_list_1700b584_1_20250628_190501.jmx",
+    "file_path": "jmx_files/test_list_1700b584_1_20250628_190501.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:01.190222"
+  },
+  "570db838-799d-48b6-893a-33489663ab9f": {
+    "id": "570db838-799d-48b6-893a-33489663ab9f",
+    "original_name": "test_list_1700b584_2.jmx",
+    "stored_name": "test_list_1700b584_2_20250628_190501.jmx",
+    "file_path": "jmx_files/test_list_1700b584_2_20250628_190501.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:01.191354"
+  },
+  "9c8dc15a-12e3-48b6-adba-9c30a7e6e49b": {
+    "id": "9c8dc15a-12e3-48b6-adba-9c30a7e6e49b",
+    "original_name": "test_exec_28199f18_0.jmx",
+    "stored_name": "test_exec_28199f18_0_20250628_190501.jmx",
+    "file_path": "jmx_files/test_exec_28199f18_0_20250628_190501.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:01.204509"
+  },
+  "47739176-543f-43d7-bf46-ea8a4c10bf8e": {
+    "id": "47739176-543f-43d7-bf46-ea8a4c10bf8e",
+    "original_name": "test_exec_28199f18_1.jmx",
+    "stored_name": "test_exec_28199f18_1_20250628_190505.jmx",
+    "file_path": "jmx_files/test_exec_28199f18_1_20250628_190505.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:05.717298"
+  },
+  "db7d4ed1-16aa-414f-b1ca-dc5588ce1aa8": {
+    "id": "db7d4ed1-16aa-414f-b1ca-dc5588ce1aa8",
+    "original_name": "test_task.jmx",
+    "stored_name": "test_task_20250628_190510.jmx",
+    "file_path": "jmx_files/test_task_20250628_190510.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:10.347697"
+  },
+  "54e112ac-d056-48b8-aaff-f0822434e2d7": {
+    "id": "54e112ac-d056-48b8-aaff-f0822434e2d7",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_190514.jmx",
+    "file_path": "jmx_files/empty_20250628_190514.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T11:05:14.819045"
+  },
+  "5ac59d1f-796c-4cef-b38c-2c1a34d3ab07": {
+    "id": "5ac59d1f-796c-4cef-b38c-2c1a34d3ab07",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_190514.jmx",
+    "file_path": "jmx_files/large_test_20250628_190514.jmx",
+    "file_size": 299000,
+    "uploaded_at": "2025-06-28T11:05:14.823053"
+  },
+  "8192c765-5913-49a6-99e6-ece34df304ec": {
+    "id": "8192c765-5913-49a6-99e6-ece34df304ec",
+    "original_name": "test file with spaces & symbols!.jmx",
+    "stored_name": "test file with spaces & symbols!_20250628_190514.jmx",
+    "file_path": "jmx_files/test file with spaces & symbols!_20250628_190514.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:05:14.831061"
+  },
+  "fd2c062f-089c-4f52-9e26-b06f362c2ffb": {
+    "id": "fd2c062f-089c-4f52-9e26-b06f362c2ffb",
+    "original_name": "test_upload.jmx",
+    "stored_name": "test_upload_20250628_190514.jmx",
+    "file_path": "jmx_files/test_upload_20250628_190514.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:05:14.835208"
+  },
+  "30f98728-346e-4efb-8f5f-0bc8b9d78a02": {
+    "id": "30f98728-346e-4efb-8f5f-0bc8b9d78a02",
+    "original_name": "test_upload_execute.jmx",
+    "stored_name": "test_upload_execute_20250628_190519.jmx",
+    "file_path": "jmx_files/test_upload_execute_20250628_190519.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:05:19.240879"
+  },
+  "0d98ebda-ffa9-450a-803a-12c55857b1f9": {
+    "id": "0d98ebda-ffa9-450a-803a-12c55857b1f9",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_190523.jmx",
+    "file_path": "jmx_files/empty_20250628_190523.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T11:05:23.877495"
+  },
+  "ed1132b0-4679-411e-9674-40c56e62d1a6": {
+    "id": "ed1132b0-4679-411e-9674-40c56e62d1a6",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_190524.jmx",
+    "file_path": "jmx_files/large_test_20250628_190524.jmx",
+    "file_size": 23890,
+    "uploaded_at": "2025-06-28T11:05:24.560101"
+  },
+  "8b44a244-7a06-4c61-b55c-26d1f9419ec5": {
+    "id": "8b44a244-7a06-4c61-b55c-26d1f9419ec5",
+    "original_name": "test_case.jmx",
+    "stored_name": "test_case_20250628_190607.jmx",
+    "file_path": "jmx_files/test_case_20250628_190607.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:06:07.314420"
+  },
+  "f938b813-daff-40bd-ab37-400ff41da8d0": {
+    "id": "f938b813-daff-40bd-ab37-400ff41da8d0",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_190607.jmx",
+    "file_path": "jmx_files/same_name_20250628_190607.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:06:07.323976"
+  },
+  "3f913426-a521-4c8d-8a5f-7a027b29f4e3": {
+    "id": "3f913426-a521-4c8d-8a5f-7a027b29f4e3",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_190607.jmx",
+    "file_path": "jmx_files/same_name_20250628_190607.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:06:07.426471"
+  },
+  "00e7cec6-92eb-4fe5-8eff-e321548c0074": {
+    "id": "00e7cec6-92eb-4fe5-8eff-e321548c0074",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_190607.jmx",
+    "file_path": "jmx_files/same_name_20250628_190607.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:06:07.534427"
+  },
+  "ddbdddb3-4814-4560-a2b6-30e4233ab62a": {
+    "id": "ddbdddb3-4814-4560-a2b6-30e4233ab62a",
+    "original_name": "sample_test.jmx",
+    "stored_name": "sample_test_20250628_190607.jmx",
+    "file_path": "jmx_files/sample_test_20250628_190607.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T11:06:07.718811"
+  },
+  "89b565c9-3d7d-43e8-b6a5-514a6bab0e39": {
+    "id": "89b565c9-3d7d-43e8-b6a5-514a6bab0e39",
+    "original_name": "sample_test.jmx",
+    "stored_name": "sample_test_20250628_190708.jmx",
+    "file_path": "jmx_files/sample_test_20250628_190708.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T11:07:08.567139"
+  },
+  "7de5d2b5-8f04-4503-aeae-76d21a47fe87": {
+    "id": "7de5d2b5-8f04-4503-aeae-76d21a47fe87",
+    "original_name": "test_plan.jmx",
+    "stored_name": "test_plan_20250628_190749.jmx",
+    "file_path": "jmx_files/test_plan_20250628_190749.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:49.104309"
+  },
+  "295586f4-0811-4215-90bb-29366ada5d55": {
+    "id": "295586f4-0811-4215-90bb-29366ada5d55",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_190749.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_190749.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:49.109979"
+  },
+  "1f813dd9-40d2-4ea9-bf74-3dc410dda144": {
+    "id": "1f813dd9-40d2-4ea9-bf74-3dc410dda144",
+    "original_name": "test_download.jmx",
+    "stored_name": "test_download_20250628_190754.jmx",
+    "file_path": "jmx_files/test_download_20250628_190754.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:54.701386"
+  },
+  "12a6a409-3a7c-43ac-8a8b-3f18f29c598e": {
+    "id": "12a6a409-3a7c-43ac-8a8b-3f18f29c598e",
+    "original_name": "test_jtl_download.jmx",
+    "stored_name": "test_jtl_download_20250628_190754.jmx",
+    "file_path": "jmx_files/test_jtl_download_20250628_190754.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:54.706136"
+  },
+  "a72c80b1-2001-45ed-8743-6831971c6dc8": {
+    "id": "a72c80b1-2001-45ed-8743-6831971c6dc8",
+    "original_name": "test_list_fdbbd1c9_0.jmx",
+    "stored_name": "test_list_fdbbd1c9_0_20250628_190759.jmx",
+    "file_path": "jmx_files/test_list_fdbbd1c9_0_20250628_190759.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:59.824107"
+  },
+  "589c2c87-63a2-4b89-8c32-0eb3a3169dfe": {
+    "id": "589c2c87-63a2-4b89-8c32-0eb3a3169dfe",
+    "original_name": "test_list_fdbbd1c9_1.jmx",
+    "stored_name": "test_list_fdbbd1c9_1_20250628_190759.jmx",
+    "file_path": "jmx_files/test_list_fdbbd1c9_1_20250628_190759.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:59.825438"
+  },
+  "ba6a7533-faa9-4ae8-8caf-3124f2719ac4": {
+    "id": "ba6a7533-faa9-4ae8-8caf-3124f2719ac4",
+    "original_name": "test_list_fdbbd1c9_2.jmx",
+    "stored_name": "test_list_fdbbd1c9_2_20250628_190759.jmx",
+    "file_path": "jmx_files/test_list_fdbbd1c9_2_20250628_190759.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:59.827013"
+  },
+  "85fa1a06-6d21-417b-bdeb-acf2f1501be8": {
+    "id": "85fa1a06-6d21-417b-bdeb-acf2f1501be8",
+    "original_name": "test_exec_02462ffa_0.jmx",
+    "stored_name": "test_exec_02462ffa_0_20250628_190759.jmx",
+    "file_path": "jmx_files/test_exec_02462ffa_0_20250628_190759.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:07:59.840795"
+  },
+  "a430c8db-f9a7-4754-8353-655d0ef28f4d": {
+    "id": "a430c8db-f9a7-4754-8353-655d0ef28f4d",
+    "original_name": "test_exec_02462ffa_1.jmx",
+    "stored_name": "test_exec_02462ffa_1_20250628_190804.jmx",
+    "file_path": "jmx_files/test_exec_02462ffa_1_20250628_190804.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:08:04.991875"
+  },
+  "aff0dae9-6f62-41e3-a0ea-35df14dae39b": {
+    "id": "aff0dae9-6f62-41e3-a0ea-35df14dae39b",
+    "original_name": "test_task.jmx",
+    "stored_name": "test_task_20250628_190809.jmx",
+    "file_path": "jmx_files/test_task_20250628_190809.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:08:09.319178"
+  },
+  "d533fd58-9b26-4590-9e63-397cac167a92": {
+    "id": "d533fd58-9b26-4590-9e63-397cac167a92",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_190813.jmx",
+    "file_path": "jmx_files/empty_20250628_190813.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T11:08:13.943596"
+  },
+  "d34620c2-88a7-49d6-8137-a10ea5ab3955": {
+    "id": "d34620c2-88a7-49d6-8137-a10ea5ab3955",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_190813.jmx",
+    "file_path": "jmx_files/large_test_20250628_190813.jmx",
+    "file_size": 299000,
+    "uploaded_at": "2025-06-28T11:08:13.947393"
+  },
+  "29cfc180-accc-4fd3-b1e4-b4dc1a7a8ffa": {
+    "id": "29cfc180-accc-4fd3-b1e4-b4dc1a7a8ffa",
+    "original_name": "test file with spaces & symbols!.jmx",
+    "stored_name": "test file with spaces & symbols!_20250628_190813.jmx",
+    "file_path": "jmx_files/test file with spaces & symbols!_20250628_190813.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:08:13.954275"
+  },
+  "2c772dd7-6fad-4550-97b0-d27b154a4821": {
+    "id": "2c772dd7-6fad-4550-97b0-d27b154a4821",
+    "original_name": "test_upload.jmx",
+    "stored_name": "test_upload_20250628_190813.jmx",
+    "file_path": "jmx_files/test_upload_20250628_190813.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:08:13.958371"
+  },
+  "bf3cdbef-fe2e-4bcc-8fba-e74f3f7b21c0": {
+    "id": "bf3cdbef-fe2e-4bcc-8fba-e74f3f7b21c0",
+    "original_name": "test_upload_execute.jmx",
+    "stored_name": "test_upload_execute_20250628_190818.jmx",
+    "file_path": "jmx_files/test_upload_execute_20250628_190818.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:08:18.844874"
+  },
+  "8bc35515-1ff9-4686-be6d-6cee09d25c7f": {
+    "id": "8bc35515-1ff9-4686-be6d-6cee09d25c7f",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_190823.jmx",
+    "file_path": "jmx_files/empty_20250628_190823.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T11:08:23.299081"
+  },
+  "86c378f8-4062-410e-9a8f-8c0ebb51a158": {
+    "id": "86c378f8-4062-410e-9a8f-8c0ebb51a158",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_190824.jmx",
+    "file_path": "jmx_files/large_test_20250628_190824.jmx",
+    "file_size": 23890,
+    "uploaded_at": "2025-06-28T11:08:24.049683"
+  },
+  "c4caad68-28e9-439d-b75b-3a2d067b2145": {
+    "id": "c4caad68-28e9-439d-b75b-3a2d067b2145",
+    "original_name": "test_case.jmx",
+    "stored_name": "test_case_20250628_190903.jmx",
+    "file_path": "jmx_files/test_case_20250628_190903.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:09:03.083649"
+  },
+  "8e0e4af7-32ad-4242-a7a4-a37489e54fe2": {
+    "id": "8e0e4af7-32ad-4242-a7a4-a37489e54fe2",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_190903.jmx",
+    "file_path": "jmx_files/same_name_20250628_190903.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:09:03.091573"
+  },
+  "3641a1e4-cd84-48ad-ba7d-14400c3db972": {
+    "id": "3641a1e4-cd84-48ad-ba7d-14400c3db972",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_190903.jmx",
+    "file_path": "jmx_files/same_name_20250628_190903.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:09:03.198739"
+  },
+  "e0154841-6964-46ee-9e10-4b27b9796612": {
+    "id": "e0154841-6964-46ee-9e10-4b27b9796612",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_190903.jmx",
+    "file_path": "jmx_files/same_name_20250628_190903.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:09:03.306633"
+  },
+  "b6fe770f-975b-4fff-ad48-05b20f69eb34": {
+    "id": "b6fe770f-975b-4fff-ad48-05b20f69eb34",
+    "original_name": "sample_test.jmx",
+    "stored_name": "sample_test_20250628_190903.jmx",
+    "file_path": "jmx_files/sample_test_20250628_190903.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T11:09:03.487291"
+  },
+  "fc911d21-f302-4e9d-acf3-b136341d625e": {
+    "id": "fc911d21-f302-4e9d-acf3-b136341d625e",
+    "original_name": "sample_test.jmx",
+    "stored_name": "sample_test_20250628_191001.jmx",
+    "file_path": "jmx_files/sample_test_20250628_191001.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T11:10:01.360528"
+  },
+  "d8cc139b-5e51-4373-87e4-52f479971ea1": {
+    "id": "d8cc139b-5e51-4373-87e4-52f479971ea1",
+    "original_name": "e2e_test.jmx",
+    "stored_name": "e2e_test_20250628_191057.jmx",
+    "file_path": "jmx_files/e2e_test_20250628_191057.jmx",
+    "file_size": 25894,
+    "uploaded_at": "2025-06-28T11:10:57.742210"
+  },
+  "5b3d6a11-ee45-4ba9-97ec-84b3a0b7b615": {
+    "id": "5b3d6a11-ee45-4ba9-97ec-84b3a0b7b615",
+    "original_name": "fast_test.jmx",
+    "stored_name": "fast_test_20250628_191702.jmx",
+    "file_path": "jmx_files/fast_test_20250628_191702.jmx",
+    "file_size": 6639,
+    "uploaded_at": "2025-06-28T11:17:02.329873"
+  },
+  "e35c6243-e8a9-4193-8fda-6e8c132dcd41": {
+    "id": "e35c6243-e8a9-4193-8fda-6e8c132dcd41",
+    "original_name": "fast_test.jmx",
+    "stored_name": "fast_test_20250628_191708.jmx",
+    "file_path": "jmx_files/fast_test_20250628_191708.jmx",
+    "file_size": 6639,
+    "uploaded_at": "2025-06-28T11:17:08.786415"
+  },
+  "b5cd490f-4823-4841-b824-48e5fc304a17": {
+    "id": "b5cd490f-4823-4841-b824-48e5fc304a17",
+    "original_name": "e2e_test.jmx",
+    "stored_name": "e2e_test_20250628_191713.jmx",
+    "file_path": "jmx_files/e2e_test_20250628_191713.jmx",
+    "file_size": 6639,
+    "uploaded_at": "2025-06-28T11:17:13.119636"
+  },
+  "a816038c-c6ba-4458-90ce-9a6162592857": {
+    "id": "a816038c-c6ba-4458-90ce-9a6162592857",
+    "original_name": "fast_test.jmx",
+    "stored_name": "fast_test_20250628_191747.jmx",
+    "file_path": "jmx_files/fast_test_20250628_191747.jmx",
+    "file_size": 6639,
+    "uploaded_at": "2025-06-28T11:17:47.951539"
+  },
+  "99eb58b5-8d0b-4231-a89b-563927913872": {
+    "id": "99eb58b5-8d0b-4231-a89b-563927913872",
+    "original_name": "test_plan.jmx",
+    "stored_name": "test_plan_20250628_192407.jmx",
+    "file_path": "jmx_files/test_plan_20250628_192407.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:07.447061"
+  },
+  "6d667be1-f11d-4ab4-815e-be2ede866be3": {
+    "id": "6d667be1-f11d-4ab4-815e-be2ede866be3",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_192407.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_192407.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:07.452659"
+  },
+  "bca8e6da-3e48-4ffe-a8d2-ff206a11024c": {
+    "id": "bca8e6da-3e48-4ffe-a8d2-ff206a11024c",
+    "original_name": "test_download.jmx",
+    "stored_name": "test_download_20250628_192411.jmx",
+    "file_path": "jmx_files/test_download_20250628_192411.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:11.825081"
+  },
+  "28f217a6-7039-40b4-a50c-a68212c5f85a": {
+    "id": "28f217a6-7039-40b4-a50c-a68212c5f85a",
+    "original_name": "test_jtl_download.jmx",
+    "stored_name": "test_jtl_download_20250628_192411.jmx",
+    "file_path": "jmx_files/test_jtl_download_20250628_192411.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:11.829691"
+  },
+  "7b173f2a-4c95-4af9-944a-f02135b0addb": {
+    "id": "7b173f2a-4c95-4af9-944a-f02135b0addb",
+    "original_name": "test_list_b33f2ae2_0.jmx",
+    "stored_name": "test_list_b33f2ae2_0_20250628_192416.jmx",
+    "file_path": "jmx_files/test_list_b33f2ae2_0_20250628_192416.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:16.195956"
+  },
+  "c200ab9c-8e9f-44cf-a737-45bc5a57b952": {
+    "id": "c200ab9c-8e9f-44cf-a737-45bc5a57b952",
+    "original_name": "test_list_b33f2ae2_1.jmx",
+    "stored_name": "test_list_b33f2ae2_1_20250628_192416.jmx",
+    "file_path": "jmx_files/test_list_b33f2ae2_1_20250628_192416.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:16.197542"
+  },
+  "d656a19d-5be6-48bf-986b-bde0a3329beb": {
+    "id": "d656a19d-5be6-48bf-986b-bde0a3329beb",
+    "original_name": "test_list_b33f2ae2_2.jmx",
+    "stored_name": "test_list_b33f2ae2_2_20250628_192416.jmx",
+    "file_path": "jmx_files/test_list_b33f2ae2_2_20250628_192416.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:16.199048"
+  },
+  "919f547d-3ba0-48a2-a0d8-f0295e8c8a33": {
+    "id": "919f547d-3ba0-48a2-a0d8-f0295e8c8a33",
+    "original_name": "test_exec_47f224e4_0.jmx",
+    "stored_name": "test_exec_47f224e4_0_20250628_192416.jmx",
+    "file_path": "jmx_files/test_exec_47f224e4_0_20250628_192416.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:16.212736"
+  },
+  "16b71325-652b-4a76-b707-6b5a150f6055": {
+    "id": "16b71325-652b-4a76-b707-6b5a150f6055",
+    "original_name": "test_exec_47f224e4_1.jmx",
+    "stored_name": "test_exec_47f224e4_1_20250628_192420.jmx",
+    "file_path": "jmx_files/test_exec_47f224e4_1_20250628_192420.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:20.521121"
+  },
+  "7f3d6de1-1eea-42f3-a6c8-2a50c7fbb4b1": {
+    "id": "7f3d6de1-1eea-42f3-a6c8-2a50c7fbb4b1",
+    "original_name": "test_task.jmx",
+    "stored_name": "test_task_20250628_192425.jmx",
+    "file_path": "jmx_files/test_task_20250628_192425.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:25.236768"
+  },
+  "82c64d35-4bea-4ccf-9405-443370c0e554": {
+    "id": "82c64d35-4bea-4ccf-9405-443370c0e554",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_192429.jmx",
+    "file_path": "jmx_files/empty_20250628_192429.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T11:24:29.806720"
+  },
+  "6bb3c422-c064-42c5-96f1-8e5fec40ffc6": {
+    "id": "6bb3c422-c064-42c5-96f1-8e5fec40ffc6",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_192429.jmx",
+    "file_path": "jmx_files/large_test_20250628_192429.jmx",
+    "file_size": 299000,
+    "uploaded_at": "2025-06-28T11:24:29.810943"
+  },
+  "a7f0b141-9a54-4d77-ab8f-e730101722de": {
+    "id": "a7f0b141-9a54-4d77-ab8f-e730101722de",
+    "original_name": "test file with spaces & symbols!.jmx",
+    "stored_name": "test file with spaces & symbols!_20250628_192429.jmx",
+    "file_path": "jmx_files/test file with spaces & symbols!_20250628_192429.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:24:29.819140"
+  },
+  "79141110-cae1-4a95-ad21-f9651d92a64b": {
+    "id": "79141110-cae1-4a95-ad21-f9651d92a64b",
+    "original_name": "test_upload.jmx",
+    "stored_name": "test_upload_20250628_192429.jmx",
+    "file_path": "jmx_files/test_upload_20250628_192429.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:24:29.824009"
+  },
+  "9800c5e9-99df-46c8-84e9-6cbf782b6292": {
+    "id": "9800c5e9-99df-46c8-84e9-6cbf782b6292",
+    "original_name": "test_upload_execute.jmx",
+    "stored_name": "test_upload_execute_20250628_192436.jmx",
+    "file_path": "jmx_files/test_upload_execute_20250628_192436.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:24:36.141373"
+  },
+  "080569cc-44ea-43fc-b50d-261b3efc7368": {
+    "id": "080569cc-44ea-43fc-b50d-261b3efc7368",
+    "original_name": "empty.jmx",
+    "stored_name": "empty_20250628_192440.jmx",
+    "file_path": "jmx_files/empty_20250628_192440.jmx",
+    "file_size": 0,
+    "uploaded_at": "2025-06-28T11:24:40.514782"
+  },
+  "aacd792a-ac15-436a-9c3b-14f57266d628": {
+    "id": "aacd792a-ac15-436a-9c3b-14f57266d628",
+    "original_name": "large_test.jmx",
+    "stored_name": "large_test_20250628_192441.jmx",
+    "file_path": "jmx_files/large_test_20250628_192441.jmx",
+    "file_size": 23890,
+    "uploaded_at": "2025-06-28T11:24:41.174981"
+  },
+  "ab20d2c1-e8ff-44c5-bdbf-0bcaa2bda0ac": {
+    "id": "ab20d2c1-e8ff-44c5-bdbf-0bcaa2bda0ac",
+    "original_name": "test_case.jmx",
+    "stored_name": "test_case_20250628_192518.jmx",
+    "file_path": "jmx_files/test_case_20250628_192518.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:25:18.909459"
+  },
+  "09509b03-989d-42cc-a1ed-426bd1d8484e": {
+    "id": "09509b03-989d-42cc-a1ed-426bd1d8484e",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_192518.jmx",
+    "file_path": "jmx_files/same_name_20250628_192518.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:25:18.917606"
+  },
+  "13ebe9c1-25f4-4b82-b51f-452338ca49ac": {
+    "id": "13ebe9c1-25f4-4b82-b51f-452338ca49ac",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_192519.jmx",
+    "file_path": "jmx_files/same_name_20250628_192519.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:25:19.022159"
+  },
+  "a8cf65bc-860b-477a-8946-e0fac7c65a9e": {
+    "id": "a8cf65bc-860b-477a-8946-e0fac7c65a9e",
+    "original_name": "same_name.jmx",
+    "stored_name": "same_name_20250628_192519.jmx",
+    "file_path": "jmx_files/same_name_20250628_192519.jmx",
+    "file_size": 2389,
+    "uploaded_at": "2025-06-28T11:25:19.126915"
+  },
+  "9cd29b9e-74d1-475a-99df-afe378d2f2ee": {
+    "id": "9cd29b9e-74d1-475a-99df-afe378d2f2ee",
+    "original_name": "fast_test.jmx",
+    "stored_name": "fast_test_20250628_192519.jmx",
+    "file_path": "jmx_files/fast_test_20250628_192519.jmx",
+    "file_size": 6640,
+    "uploaded_at": "2025-06-28T11:25:19.326980"
+  },
+  "1c2417bd-e19d-4254-ac95-1ff6ca281866": {
+    "id": "1c2417bd-e19d-4254-ac95-1ff6ca281866",
+    "original_name": "fast_test.jmx",
+    "stored_name": "fast_test_20250628_192523.jmx",
+    "file_path": "jmx_files/fast_test_20250628_192523.jmx",
+    "file_size": 6640,
+    "uploaded_at": "2025-06-28T11:25:23.952374"
+  },
+  "4fc00c11-17e9-477d-a949-709193ba13ce": {
+    "id": "4fc00c11-17e9-477d-a949-709193ba13ce",
+    "original_name": "e2e_test.jmx",
+    "stored_name": "e2e_test_20250628_192529.jmx",
+    "file_path": "jmx_files/e2e_test_20250628_192529.jmx",
+    "file_size": 6640,
+    "uploaded_at": "2025-06-28T11:25:29.479675"
+  },
+  "72c23844-2671-4d02-a2da-a9e4d21bd568": {
+    "id": "72c23844-2671-4d02-a2da-a9e4d21bd568",
+    "original_name": "test_workflow.jmx",
+    "stored_name": "test_workflow_20250628_192722.jmx",
+    "file_path": "jmx_files/test_workflow_20250628_192722.jmx",
+    "file_size": 2990,
+    "uploaded_at": "2025-06-28T11:27:22.536532"
+  }
+}

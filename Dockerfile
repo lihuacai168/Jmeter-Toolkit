@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     gcc \
     curl \
     python3-dev \
+    wget \
+    unzip \
+    openjdk-17-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 # Change the working directory to the `app` directory
@@ -37,18 +40,31 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.12-slim
 
-# Set environment variables
+# Set environment variables for JMeter
+ENV JMETER_VERSION=5.6.3
+ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
+ENV PATH="${JMETER_HOME}/bin:/app/.venv/bin:$PATH"
+
+# Set application environment variables
 ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
 ENV DATABASE_URL=sqlite:///./app.db
-ENV PATH="/app/.venv/bin:$PATH"
 
-# Install runtime dependencies
+# Install runtime dependencies including JMeter requirements
 RUN apt-get update && apt-get install -y \
     libmagic1 \
     libpq-dev \
     curl \
+    wget \
+    unzip \
+    openjdk-17-jdk \
     && rm -rf /var/lib/apt/lists/*
+
+# Install JMeter
+RUN wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
+    && tar -xzf apache-jmeter-${JMETER_VERSION}.tgz -C /opt \
+    && rm apache-jmeter-${JMETER_VERSION}.tgz \
+    && chmod +x ${JMETER_HOME}/bin/jmeter
 
 # Copy the environment with all dependencies
 COPY --from=builder /app/.venv /app/.venv

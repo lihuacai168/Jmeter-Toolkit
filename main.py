@@ -518,6 +518,250 @@ async def download_file(file_type: str, file_name: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/generate-report/{task_id}")
+async def generate_html_report(task_id: str, jmeter_manager: Optional[JMeterManager] = Depends(get_jmeter_manager)):
+    """Generate HTML report from JTL file."""
+    try:
+        import subprocess
+
+        if PRODUCTION_MODE and jmeter_manager:
+            # Get task info from database
+            task_data = jmeter_manager.get_task_status(task_id)
+            if not task_data.get("jtl_file_name"):
+                raise HTTPException(status_code=404, detail="Task has no JTL file")
+
+            jtl_file_name = task_data["jtl_file_name"]
+            jtl_path = settings.jtl_files_path / jtl_file_name
+
+        else:
+            # Development mode - find JTL file
+            jtl_files = list(settings.jtl_files_path.glob("*.jtl"))
+            if not jtl_files:
+                raise HTTPException(status_code=404, detail="No JTL files found")
+            jtl_path = jtl_files[0]  # Use first available JTL file for demo
+
+        if not jtl_path.exists():
+            raise HTTPException(status_code=404, detail="JTL file not found")
+
+        # Create report directory
+        report_dir_name = jtl_path.stem
+        report_dir = settings.reports_path / report_dir_name
+
+        # Remove existing report directory if exists
+        if report_dir.exists():
+            import shutil
+
+            shutil.rmtree(report_dir)
+        report_dir.mkdir(parents=True, exist_ok=True)
+
+        # Check if JMeter is available
+        import os
+        import shutil
+
+        jmeter_available = (
+            os.path.exists("/opt/homebrew/bin/jmeter")
+            or os.path.exists("/usr/local/bin/jmeter")
+            or shutil.which("jmeter") is not None
+        )
+
+        if jmeter_available:
+            # Use real JMeter to generate HTML report
+            command = ["jmeter", "-g", str(jtl_path), "-o", str(report_dir)]
+            logger.info(f"Generating HTML report with command: {' '.join(command)}")
+
+            result = subprocess.run(command, capture_output=True, text=True, timeout=300)
+
+            if result.returncode == 0:
+                logger.info(f"HTML report generated successfully: {report_dir}")
+                return APIResponse.success_response(
+                    data={
+                        "task_id": task_id,
+                        "report_path": f"/reports/{report_dir_name}/",
+                        "message": "HTML report generated successfully",
+                    },
+                    message="HTML report generated successfully",
+                )
+            else:
+                logger.error(f"JMeter report generation failed: {result.stderr}")
+                raise HTTPException(status_code=500, detail=f"Report generation failed: {result.stderr}")
+        else:
+            # Create mock report for development
+            logger.warning("JMeter not found, creating mock HTML report")
+            (report_dir / "index.html").write_text(
+                f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>JMeter Test Report</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 20px; }}
+                    .header {{ background: #f8f9fa; padding: 20px; border-radius: 5px; }}
+                    .summary {{ margin: 20px 0; }}
+                    .metrics {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }}
+                    .metric {{ background: white; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }}
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>JMeter Test Report</h1>
+                    <p>Generated from: {jtl_path.name}</p>
+                    <p>Report ID: {task_id}</p>
+                </div>
+
+                <div class="summary">
+                    <h2>Test Summary</h2>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>Total Samples</h3>
+                            <p>100</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Success Rate</h3>
+                            <p>95%</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Average Response Time</h3>
+                            <p>150ms</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Max Response Time</h3>
+                            <p>500ms</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2>Note</h2>
+                    <p>This is a mock report for development purposes. Install JMeter to generate real reports.</p>
+                </div>
+            </body>
+            </html>
+            """
+            )
+
+            # Create additional mock files
+            (report_dir / "content").mkdir(exist_ok=True)
+            (report_dir / "content" / "styles.css").write_text("/* Mock CSS */")
+            (report_dir / "content" / "report.json").write_text('{"summary": "Mock report data"}')
+
+            return APIResponse.success_response(
+                data={
+                    "task_id": task_id,
+                    "report_path": f"/reports/{report_dir_name}/",
+                    "message": "Mock HTML report generated (JMeter not found)",
+                },
+                message="Mock HTML report generated",
+            )
+
+    except subprocess.TimeoutExpired:
+        logger.error("HTML report generation timeout")
+        raise HTTPException(status_code=500, detail="Report generation timed out")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Generate HTML report error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/download-report-zip/{task_id}")
+async def download_html_report_zip(task_id: str, jmeter_manager: Optional[JMeterManager] = Depends(get_jmeter_manager)):
+    """Download HTML report as ZIP file."""
+    try:
+        import tempfile
+        import zipfile
+        from pathlib import Path
+
+        # 使用通用的方法查找报告目录
+        if PRODUCTION_MODE and jmeter_manager:
+            # Production mode - get task info from database
+            task_data = jmeter_manager.get_task_status(task_id)
+            report_path = task_data.get("report_path")
+        else:
+            # Development mode - check if this is using dev_server data
+            try:
+                # Try to load from dev_server data files if available
+                import json
+
+                tasks_file = Path("dev_tasks.json")
+                if tasks_file.exists():
+                    with open(tasks_file, "r", encoding="utf-8") as f:
+                        tasks_db = json.load(f)
+                    if task_id not in tasks_db:
+                        raise HTTPException(status_code=404, detail="Task not found")
+                    task = tasks_db[task_id]
+                    report_path = task.get("report_path")
+                else:
+                    raise HTTPException(status_code=404, detail="No task data available")
+            except Exception as e:
+                logger.error(f"Error loading dev task data: {e}")
+                raise HTTPException(status_code=500, detail="Error accessing task data")
+
+        if not report_path:
+            raise HTTPException(status_code=404, detail="No report available for this task")
+
+        # 从report_path提取目录名称 (去掉前缀/reports/和后缀/)
+        if report_path.startswith("/reports/"):
+            report_dir_name = report_path[9:]  # 去掉 "/reports/"
+            if report_dir_name.endswith("/"):
+                report_dir_name = report_dir_name[:-1]  # 去掉末尾的 "/"
+        else:
+            raise HTTPException(status_code=404, detail="Invalid report path")
+
+        report_dir = settings.reports_path / report_dir_name
+
+        if not report_dir.exists():
+            raise HTTPException(status_code=404, detail="HTML report not found")
+
+        # Create temporary ZIP file
+        with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_file:
+            zip_path = tmp_file.name
+
+        try:
+            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                # Add all files in report directory to ZIP
+                for file_path in report_dir.rglob("*"):
+                    if file_path.is_file():
+                        # Calculate relative path within ZIP
+                        relative_path = file_path.relative_to(report_dir)
+                        zip_file.write(file_path, relative_path)
+
+            # Return ZIP file as download
+            from fastapi.responses import FileResponse
+
+            zip_filename = f"jmeter_report_{report_dir_name}.zip"
+
+            # Clean up temp file after response
+            def cleanup():
+                try:
+                    Path(zip_path).unlink()
+                except Exception:
+                    pass
+
+            response = FileResponse(path=zip_path, filename=zip_filename, media_type="application/zip")
+
+            # Schedule cleanup (FastAPI will handle this after response is sent)
+            import threading
+
+            timer = threading.Timer(10.0, cleanup)  # Clean up after 10 seconds
+            timer.start()
+
+            return response
+
+        except Exception as e:
+            # Clean up on error
+            try:
+                Path(zip_path).unlink()
+            except Exception:
+                pass
+            raise e
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Download HTML report error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     import uvicorn
 
