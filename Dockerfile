@@ -1,49 +1,79 @@
-FROM python:3.11-slim
+# Install uv
+FROM python:3.12-slim AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Set environment variables
+# Set environment variables for builder
 ENV PYTHONUNBUFFERED=1
-ENV ENVIRONMENT=development
+ENV ENVIRONMENT=production
 ENV DATABASE_URL=sqlite:///./app.db
-ENV DEBUG=true
 
-# Install system dependencies including UV
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
-    curl \
     libmagic1 \
     libpq-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && export PATH="$HOME/.cargo/bin:$PATH"
+    curl \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Change the working directory to the `app` directory
+WORKDIR /app
+
+# Copy project files first to ensure lock file is available
+COPY uv.lock pyproject.toml ./
+
+# Install dependencies - try locked first, fallback to unlocked if needed
+RUN --mount=type=cache,target=/root/.cache/uv \
+    (uv sync --locked --no-install-project --no-editable || \
+     uv sync --no-install-project --no-editable)
+
+# Copy the project into the intermediate image
+ADD . /app
+
+# Sync the project - try locked first, fallback to unlocked if needed
+RUN --mount=type=cache,target=/root/.cache/uv \
+    (uv sync --locked --no-editable || \
+     uv sync --no-editable)
+
+FROM python:3.12-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV ENVIRONMENT=production
+ENV DATABASE_URL=sqlite:///./app.db
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libmagic1 \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the environment with all dependencies
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app /app
+# Copy uv binary for package management in runtime
+COPY --from=builder /bin/uv /bin/uv
 
 # Set working directory
 WORKDIR /app
-
-# Copy project configuration
-COPY pyproject.toml uv.toml ./
-
-# Install Python dependencies using UV
-RUN export PATH="$HOME/.cargo/bin:$PATH" && \
-    uv venv && \
-    uv pip install -e "."
-
-# Copy application code
-COPY . .
 
 # Create required directories
 RUN mkdir -p jmx_files jtl_files reports static templates
 
 # Create non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-RUN chown -R appuser:appuser /app
+RUN groupadd -r appuser && useradd -r -g appuser appuser \
+    && chown -R appuser:appuser /app
+
 USER appuser
 
 # Expose port
 EXPOSE 8000
 
-# Health check (simplified to accept both 200 and 503)
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -s http://localhost:8000/health || exit 1
 
-# Start application using UV
-CMD ["/bin/bash", "-c", "source .venv/bin/activate && uvicorn main:app --host 0.0.0.0 --port 8000"]
+# Start application
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

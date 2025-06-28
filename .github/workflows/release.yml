@@ -27,10 +27,14 @@ jobs:
       with:
         python-version: 3.11
 
+    - name: Install UV
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        uv pip install -e "."
         pip install pytest pytest-cov
 
     - name: Run full test suite
@@ -70,7 +74,7 @@ jobs:
         mkdir -p release/jmeter-toolkit-${{ steps.version.outputs.version }}
 
         # Copy application files
-        cp -r *.py config core database middleware models utils tests requirements.txt release/jmeter-toolkit-${{ steps.version.outputs.version }}/
+        cp -r *.py config core database middleware models utils tests pyproject.toml release/jmeter-toolkit-${{ steps.version.outputs.version }}/
         cp -r static templates release/jmeter-toolkit-${{ steps.version.outputs.version }}/ 2>/dev/null || true
         cp README.md LICENSE DEPLOYMENT.md TESTING.md release/jmeter-toolkit-${{ steps.version.outputs.version }}/
         cp start_dev.sh start_simple.sh release/jmeter-toolkit-${{ steps.version.outputs.version }}/
@@ -92,9 +96,14 @@ jobs:
 
         echo "✅ Python version check passed"
 
+        # Install UV
+        echo "📦 Installing UV..."
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="$HOME/.cargo/bin:$PATH"
+
         # Install dependencies
         echo "📦 Installing dependencies..."
-        pip install -r requirements.txt
+        uv pip install -e "."
 
         # Create directories
         echo "📁 Creating directories..."

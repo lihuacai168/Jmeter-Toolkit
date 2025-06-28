@@ -5,29 +5,17 @@ This directory contains all the GitHub Actions workflows for the JMeter Toolkit 
 ## 🔄 Workflows Overview
 
 ### 1. **CI/CD Pipeline** (`ci.yml`)
-**Triggers**: Push to main branches, Pull requests
+**Triggers**: Push to main branches, Pull requests, feature branches
 - ✅ **Multi-Python Testing** (3.9, 3.10, 3.11, 3.12)
 - 🧪 **Full Test Suite** with coverage reporting
+- 🔍 **Code Quality Checks** (flake8, black, isort, mypy, pylint)
+- 📊 **Complexity Analysis** (radon)
+- 🔒 **Security Scanning** (bandit, safety, pip-audit)
 - 🐳 **Docker Build Testing**
-- 🔗 **Integration Tests** with PostgreSQL
+- 🔗 **Integration Tests** with Docker Compose
 - 📦 **Deployment Readiness Check**
 
-### 2. **Code Quality** (`code-quality.yml`)
-**Triggers**: Push to main branches, Pull requests
-- 🔍 **Linting** (flake8, pylint)
-- 🎨 **Code Formatting** (black, isort)
-- 🏷️ **Type Checking** (mypy)
-- 📊 **Complexity Analysis** (radon)
-- 🔒 **Dependency Security** (safety, pip-audit)
-
-### 3. **Performance Tests** (`performance.yml`)
-**Triggers**: Weekly schedule, Manual trigger, Main branch changes
-- ⚡ **Performance Testing** 
-- 🚛 **Load Testing** (Locust)
-- 💾 **Memory Usage Monitoring**
-- 📈 **Concurrent Request Testing**
-
-### 4. **Release Management** (`release.yml`)
+### 2. **Release Management** (`release.yml`)
 **Triggers**: Version tags (v*), Manual trigger
 - 🏷️ **Automated Release Creation**
 - 📦 **Release Package Generation**
@@ -35,7 +23,13 @@ This directory contains all the GitHub Actions workflows for the JMeter Toolkit 
 - 📋 **Release Notes Generation**
 - 📤 **Asset Upload** (tar.gz, zip, docker)
 
-### 5. **Dependency Updates** (`dependency-update.yml`)
+### 3. **Docker Image Build & Push** (`build_and_push_image.yml`)
+**Triggers**: Push to main branches, Manual trigger
+- 🐳 **Multi-architecture Docker builds**
+- 📤 **Push to Docker registry**
+- 🏷️ **Automated tagging**
+
+### 4. **Dependency Updates** (`dependency-update.yml`)
 **Triggers**: Weekly schedule, Manual trigger
 - 🔄 **Automated Dependency Updates**
 - 🔒 **Security Vulnerability Scanning**
@@ -47,24 +41,50 @@ This directory contains all the GitHub Actions workflows for the JMeter Toolkit 
 Add these badges to your main README.md:
 
 ```markdown
-![CI/CD](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/CI/CD%20Pipeline/badge.svg)
-![Code Quality](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Code%20Quality/badge.svg)
-![Security](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Security%20Scan/badge.svg)
+![CI/CD Pipeline](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/CI/CD%20Pipeline/badge.svg)
+![Docker Build](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Build%20and%20Push%20Image/badge.svg)
+![Release](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Release/badge.svg)
+![Dependency Update](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Dependency%20Update/badge.svg)
 ```
 
 ## 🔧 Configuration Files
 
 The workflows use these configuration files:
-- `.flake8` - Flake8 linting configuration
-- `pyproject.toml` - Black, isort, mypy, pytest configuration
-- `requirements.txt` - Python dependencies
+- `pyproject.toml` - Python dependencies, project configuration, and tool settings
+- `uv.lock` - UV dependency lockfile for reproducible builds
+- `Dockerfile` - Production Docker image build
+- `Dockerfile.ci` - CI-specific Docker image with test dependencies
+- `docker-compose.yml` - Production environment setup
+- `docker-compose.ci.yml` - CI testing environment
+
+## ⚡ Modern Features
+
+### UV Dependency Management
+All workflows use **UV** for fast and reliable dependency management:
+- 🚀 **Faster installs** compared to pip
+- 🔒 **Lockfile support** for reproducible builds
+- 📦 **Virtual environment management**
+- 🔄 **Fallback mechanisms** for locked/unlocked dependencies
+
+### Multi-stage Docker Builds
+- 🏗️ **Builder stage** for compilation and dependency installation
+- 🐳 **Runtime stage** with minimal dependencies
+- 📦 **Cached layers** for faster builds
+- 🔒 **Security-focused** with non-root user
+
+### Enhanced Quality Gates
+- 📊 **Complexity analysis** with detailed reports
+- 🔍 **Multi-tool linting** (flake8, pylint, mypy)
+- 🔒 **Security scanning** (bandit, safety, pip-audit)
+- 📈 **Coverage reporting** with Codecov integration
 
 ## 🚀 Triggering Workflows
 
 ### Automatic Triggers
-- **Push to main/master/develop**: Runs CI/CD and Code Quality
-- **Pull Requests**: Runs CI/CD and Code Quality
-- **Weekly Schedule**: Runs Performance Tests and Dependency Updates
+- **Push to main/master/develop**: Runs CI/CD Pipeline and Docker Build
+- **Push to feature branches**: Runs CI/CD Pipeline (all jobs)
+- **Pull Requests**: Runs full CI/CD Pipeline with all quality checks
+- **Weekly Schedule**: Runs Dependency Updates
 - **Version Tags**: Runs Release workflow
 
 ### Manual Triggers
@@ -128,9 +148,11 @@ env:
 ### Common Issues
 
 1. **Tests Failing**: Check the test logs in the Actions tab
-2. **Dependencies**: Update requirements.txt if imports fail
-3. **Python Version**: Ensure compatibility with all tested versions
-4. **Docker Build**: Check Dockerfile syntax and dependencies
+2. **UV Dependencies**: Update `uv.lock` if dependency issues occur, run `uv lock`
+3. **Python Version**: Ensure compatibility with all tested versions (3.9-3.12)
+4. **Docker Build**: Check Dockerfile syntax and UV installation
+5. **Lock File Sync**: If dependencies change, run `uv sync` locally and commit `uv.lock`
+6. **Permission Issues**: Check Docker user permissions in multi-stage builds
 
 ### Debug Mode
 Add this to any workflow step for debugging:

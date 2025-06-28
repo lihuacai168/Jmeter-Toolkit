@@ -1,8 +1,9 @@
-name: Dependency Updates
+name: Dependency Updates (Disabled - Using UV and pyproject.toml)
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+  # Disabled - we now use UV and pyproject.toml for dependency management
+  # schedule:
+  #   - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
   workflow_dispatch:
 
 jobs:
@@ -21,29 +22,23 @@ jobs:
       with:
         python-version: 3.11
 
-    - name: Install pip-tools
+    - name: Install UV
       run: |
-        python -m pip install --upgrade pip
-        pip install pip-tools
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-    - name: Backup current requirements
+    - name: Backup current dependencies
       run: |
-        cp requirements.txt requirements.txt.backup
+        cp pyproject.toml pyproject.toml.backup
 
     - name: Update dependencies
       run: |
-        # Create requirements.in if it doesn't exist
-        if [ ! -f requirements.in ]; then
-          # Extract package names without versions
-          sed 's/[>=<].*$//' requirements.txt > requirements.in
-        fi
-
-        # Update to latest versions
-        pip-compile --upgrade requirements.in
+        # UV handles dependency resolution automatically
+        uv pip compile pyproject.toml --upgrade
 
     - name: Install updated dependencies
       run: |
-        pip install -r requirements.txt
+        uv pip install -e "."
 
     - name: Run tests with updated dependencies
       run: |
@@ -64,11 +59,11 @@ jobs:
         echo "### Updated Packages" >> update-report.md
         echo "" >> update-report.md
 
-        # Compare old and new requirements
-        if [ -f requirements.txt.backup ]; then
+        # Compare old and new dependencies
+        if [ -f pyproject.toml.backup ]; then
           echo "#### Changes:" >> update-report.md
           echo '```diff' >> update-report.md
-          diff requirements.txt.backup requirements.txt >> update-report.md || true
+          diff pyproject.toml.backup pyproject.toml >> update-report.md || true
           echo '```' >> update-report.md
         fi
 
@@ -84,16 +79,16 @@ jobs:
         pip list --format=freeze | head -20 >> update-report.md
         echo '```' >> update-report.md
 
-    - name: Check if requirements changed
+    - name: Check if dependencies changed
       id: changes
       run: |
-        if [ -f requirements.txt.backup ]; then
-          if ! diff -q requirements.txt requirements.txt.backup > /dev/null; then
+        if [ -f pyproject.toml.backup ]; then
+          if ! diff -q pyproject.toml pyproject.toml.backup > /dev/null; then
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Requirements file has changes"
+            echo "Dependencies file has changes"
           else
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "No changes in requirements"
+            echo "No changes in dependencies"
           fi
         else
           echo "changed=true" >> $GITHUB_OUTPUT
@@ -116,7 +111,7 @@ jobs:
           - ✅ Security vulnerabilities checked
 
           ### 📋 Changes
-          See the diff in `requirements.txt` for specific version changes.
+          See the diff in `pyproject.toml` for specific version changes.
 
           ### 🔍 Review Notes
           - Please review the changes carefully
@@ -136,8 +131,8 @@ jobs:
         path: |
           update-report.md
           safety-report.json
-          requirements.txt
-          requirements.txt.backup
+          pyproject.toml
+          pyproject.toml.backup
 
   security-audit:
     name: Security Audit
@@ -154,9 +149,10 @@ jobs:
 
     - name: Install security tools
       run: |
-        python -m pip install --upgrade pip
-        pip install safety bandit pip-audit
-        pip install -r requirements.txt
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        uv pip install safety bandit pip-audit
+        uv pip install -e "."
 
     - name: Run comprehensive security audit
       run: |

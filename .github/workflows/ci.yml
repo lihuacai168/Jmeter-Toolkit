@@ -27,7 +27,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           ${{ runner.os }}-pip-
 
@@ -97,10 +97,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python 3.11
+    - name: Set up Python 3.12
       uses: actions/setup-python@v4
       with:
-        python-version: 3.11
+        python-version: 3.12
 
     - name: Install UV
       run: |
@@ -109,13 +109,14 @@ jobs:
 
     - name: Install linting dependencies
       run: |
-        uv venv --python 3.11
+        uv venv --python 3.12
         uv pip install -e ".[dev,test]"
+        uv pip install pylint radon
 
     - name: Run flake8
       run: |
         uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --output-file=flake8-report.txt
 
     - name: Check code formatting with black
       run: |
@@ -127,8 +128,30 @@ jobs:
 
     - name: Type checking with mypy
       run: |
-        uv run mypy . --ignore-missing-imports --no-strict-optional
+        uv run mypy . --ignore-missing-imports --no-strict-optional --output-file=mypy-report.txt || echo "Type checking issues found"
+
+    - name: Lint with pylint (limited scope)
+      run: |
+        uv run pylint --output-format=text $(find . -name "*.py" | grep -E "(main|config|utils|core|database)" | head -10) > pylint-report.txt || echo "Pylint issues found"
       continue-on-error: true
+
+    - name: Calculate cyclomatic complexity
+      run: |
+        uv run radon cc . --show-complexity --min=B > complexity-report.txt || echo "Complexity analysis completed"
+        uv run radon mi . > maintainability-report.txt || echo "Maintainability analysis completed"
+      continue-on-error: true
+
+    - name: Upload code quality reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-quality-reports-${{ github.run_number }}
+        path: |
+          flake8-report.txt
+          mypy-report.txt
+          pylint-report.txt
+          complexity-report.txt
+          maintainability-report.txt
+      if: always()
 
   security:
     name: Security Scan
@@ -137,11 +160,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for better analysis
 
-    - name: Set up Python 3.11
+    - name: Set up Python 3.12
       uses: actions/setup-python@v4
       with:
-        python-version: 3.11
+        python-version: 3.12
 
     - name: Install UV
       run: |
@@ -150,27 +175,44 @@ jobs:
 
     - name: Install security dependencies
       run: |
-        uv venv --python 3.11
+        uv venv --python 3.12
         uv pip install -e ".[dev,test]"
-        uv pip install bandit safety
+        uv pip install bandit safety pip-audit
 
     - name: Run bandit security scan
       run: |
-        uv run bandit -r . -f json -o bandit-report.json
+        uv run bandit -r . -f json -o bandit-report.json --exclude="*/tests/*,*/venv/*"
       continue-on-error: true
 
-    - name: Run safety check
+    - name: Run safety check for known vulnerabilities
       run: |
-        uv run safety check --json --output safety-report.json
-      continue-on-error: true
+        uv run safety check --json --output safety-report.json || echo "Safety check completed with warnings"
+
+    - name: Run pip-audit for additional security checks
+      run: |
+        uv run pip-audit --format=json --output=pip-audit-report.json || echo "Pip audit completed with warnings"
+
+    - name: Generate security summary
+      run: |
+        echo "## Security Scan Report" > security-summary.md
+        echo "" >> security-summary.md
+        echo "### Dependencies List" >> security-summary.md
+        uv pip list --format=freeze > dependencies.txt
+        echo '```' >> security-summary.md
+        head -n 20 dependencies.txt >> security-summary.md
+        echo '```' >> security-summary.md
 
     - name: Upload security reports
       uses: actions/upload-artifact@v4
       with:
-        name: security-reports
+        name: security-reports-${{ github.run_number }}
         path: |
           bandit-report.json
           safety-report.json
+          pip-audit-report.json
+          security-summary.md
+          dependencies.txt
+      if: always()
 
   docker:
     name: Docker Build Test

@@ -1,4 +1,6 @@
-FROM python:3.11-slim
+# Install uv
+FROM python:3.12-slim AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Set environment variables for CI
 ENV PYTHONUNBUFFERED=1
@@ -6,24 +8,54 @@ ENV ENVIRONMENT=development
 ENV DATABASE_URL=sqlite:///./ci_test.db
 ENV DEBUG=true
 
+# Install build dependencies and minimal dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Change the working directory to the `app` directory
+WORKDIR /app
+
+# Copy project files first to ensure lock file is available
+COPY uv.lock pyproject.toml ./
+
+# Install dependencies - try locked first, fallback to unlocked if needed
+RUN --mount=type=cache,target=/root/.cache/uv \
+    (uv sync --locked --no-install-project --no-editable || \
+     uv sync --no-install-project --no-editable)
+
+# Copy the project into the intermediate image
+ADD . /app
+
+# Sync the project with test dependencies - try locked first, fallback to unlocked if needed
+RUN --mount=type=cache,target=/root/.cache/uv \
+    (uv sync --locked --no-editable --extra test || \
+     uv sync --no-editable --extra test)
+
+FROM python:3.12-slim
+
+# Set environment variables for CI
+ENV PYTHONUNBUFFERED=1
+ENV ENVIRONMENT=development
+ENV DATABASE_URL=sqlite:///./ci_test.db
+ENV DEBUG=true
+ENV PATH="/app/.venv/bin:$PATH"
+
 # Install minimal dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy the environment with all dependencies including pytest
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app /app
+# Copy uv binary for package management in runtime
+COPY --from=builder /bin/uv /bin/uv
+
 # Set working directory
 WORKDIR /app
-
-# Copy and install only essential dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir fastapi uvicorn pydantic sqlalchemy loguru jinja2 starlette python-multipart
-
-# Copy minimal application files
-COPY main.py .
-COPY dev_server.py .
-COPY config/ config/
-COPY database/ database/
-COPY models/ models/
 
 # Create required directories
 RUN mkdir -p jmx_files jtl_files reports static templates
@@ -31,8 +63,21 @@ RUN mkdir -p jmx_files jtl_files reports static templates
 # Create test database file
 RUN touch ci_test.db
 
+# Verify pytest installation with detailed logging
+RUN echo "🔍 Checking Python environment..." && \
+    echo "Python version: $(python --version)" && \
+    echo "Python path: $(which python)" && \
+    echo "🔍 Checking virtual environment..." && \
+    echo "Virtual env path: /app/.venv" && \
+    echo "🔍 Listing installed packages..." && \
+    uv pip list | grep -i pytest || echo "❌ No pytest packages found" && \
+    echo "🔍 Checking pytest directly..." && \
+    python -c "import pytest; print(f'✅ pytest version: {pytest.__version__}')" || echo "❌ pytest import failed" && \
+    echo "🔍 Checking pytest command..." && \
+    pytest --version || echo "❌ pytest command not available"
+
 # Expose port
 EXPOSE 8000
 
 # Start with development server for CI testing
-CMD ["python", "-m", "uvicorn", "dev_server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/bin/bash", "-c", "python -m uvicorn dev_server:app --host 0.0.0.0 --port 8000"]
