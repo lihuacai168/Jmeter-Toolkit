@@ -1,0 +1,52 @@
+{
+  "54676869-d615-4d2f-b6ab-c9533ea8947d": {
+    "task_id": "54676869-d615-4d2f-b6ab-c9533ea8947d",
+    "status": "completed",
+    "file_name": "sample_test_20250628_130117.jmx",
+    "output_file": "sample_test_20250628_130117_20250628_154112.jtl",
+    "cost_time": "56.02s",
+    "created_at": "2025-06-28T07:42:08.424713",
+    "completed_at": "2025-06-28T07:42:08.424722",
+    "report_path": "/reports/sample_test_20250628_130117_20250628_154112/"
+  },
+  "c7d0d811-54f9-47cf-97c6-f91665f6eec4": {
+    "task_id": "c7d0d811-54f9-47cf-97c6-f91665f6eec4",
+    "status": "completed",
+    "file_name": "simple_test.jmx",
+    "output_file": "simple_test_20250628_160301.jtl",
+    "cost_time": "5.20s",
+    "created_at": "2025-06-28T08:03:07.122605",
+    "completed_at": "2025-06-28T08:03:07.122620",
+    "report_path": "/reports/simple_test_20250628_160301/"
+  },
+  "b460cca7-f984-48af-bd89-4613357ff2bf": {
+    "task_id": "b460cca7-f984-48af-bd89-4613357ff2bf",
+    "status": "completed",
+    "file_name": "sample_test_20250628_130117.jmx",
+    "output_file": "sample_test_20250628_130117_20250628_160355.jtl",
+    "cost_time": "61.16s",
+    "created_at": "2025-06-28T08:04:56.719939",
+    "completed_at": "2025-06-28T08:04:56.719953",
+    "report_path": "/reports/sample_test_20250628_130117_20250628_160355/"
+  },
+  "63316eff-ae47-445e-9066-125ad1a253f0": {
+    "task_id": "63316eff-ae47-445e-9066-125ad1a253f0",
+    "status": "completed",
+    "file_name": "simple_test.jmx",
+    "output_file": "simple_test_20250628_161102.jtl",
+    "cost_time": "3.40s",
+    "created_at": "2025-06-28T08:11:05.634529",
+    "completed_at": "2025-06-28T08:11:05.634543",
+    "report_path": "/reports/simple_test_20250628_161102/"
+  },
+  "6fe834f5-7099-4659-b3b7-94626d4c0fb5": {
+    "task_id": "6fe834f5-7099-4659-b3b7-94626d4c0fb5",
+    "status": "completed",
+    "file_name": "sample_test_20250628_130117.jmx",
+    "output_file": "sample_test_20250628_130117_20250628_165550.jtl",
+    "cost_time": "60.96s",
+    "created_at": "2025-06-28T08:56:51.931749",
+    "completed_at": "2025-06-28T08:56:51.931758",
+    "report_path": "/reports/sample_test_20250628_130117_20250628_165550/"
+  }
+}

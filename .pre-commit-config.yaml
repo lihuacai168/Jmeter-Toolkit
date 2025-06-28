@@ -37,7 +37,7 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-        args: [--max-line-length=127, --ignore=E203,W503,F401,E402]
+        args: ["--max-line-length=127", "--ignore=E203,W503,F401,E402"]
         exclude: ^(dev_server\.py|tests/conftest\.py|venv/.*)
 
   # Remove unused imports and variables

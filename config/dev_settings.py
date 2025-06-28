@@ -18,7 +18,8 @@ class DevSettings(Settings):
     # Development settings
     debug: bool = True
     reload: bool = True
-    environment: str = "development"
+    # environment: str = "development"
+    environment: str = "production"
     log_level: str = "DEBUG"
 
     # Allow all origins for development

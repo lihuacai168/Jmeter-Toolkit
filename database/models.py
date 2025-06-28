@@ -88,28 +88,6 @@ class FileRecord(Base):
         return f"<FileRecord(id={self.id}, name={self.original_name}, type={self.file_type})>"
 
 
-class Report(Base):
-    """Report model."""
-
-    __tablename__ = "reports"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    task_id = Column(UUID(as_uuid=True), nullable=False)
-    jtl_file_path = Column(String(500), nullable=False)
-    report_path = Column(String(500), nullable=False)
-    report_url = Column(String(500), nullable=False)
-
-    # Generation information
-    generation_time = Column(Float, nullable=True)  # in seconds
-    generated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-
-    # Metadata
-    is_deleted = Column(Boolean, default=False, nullable=False)
-
-    def __repr__(self):
-        return f"<Report(id={self.id}, task_id={self.task_id})>"
-
-
 class AuditLog(Base):
     """Audit log model."""
 
