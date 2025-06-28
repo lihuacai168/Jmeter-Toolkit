@@ -430,6 +430,9 @@ async def execute_jmx(request: ExecuteRequest):
             timestamp=datetime.utcnow().isoformat(),
         )
 
+    except subprocess.TimeoutExpired:
+        logger.error("JMeter execution timeout")
+        return APIResponse(success=False, message="JMeter execution timed out", timestamp=datetime.utcnow().isoformat())
     except HTTPException:
         raise
     except Exception as e:
