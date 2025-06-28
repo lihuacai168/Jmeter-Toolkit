@@ -77,10 +77,10 @@ jobs:
         uv run pytest tests/test_performance_execute.py -v --tb=short -m performance
       continue-on-error: true
 
-    - name: Run unit test suite (no coverage)
+    - name: Skip separate unit tests (now included in integration tests)
       run: |
-        uv run pytest tests/ -v --tb=short --ignore=tests/test_integration_execute.py
-
+        echo "ℹ️  Unit tests are now included in the comprehensive integration test suite"
+        echo "ℹ️  This provides better coverage by combining unit + integration testing"
 
   lint:
     name: Code Quality
