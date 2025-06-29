@@ -1,9 +1,9 @@
 # JMeter Toolkit v2.0
 
-![CI/CD](https://github.com/lihuacai168/jmeter_toolit/actions/workflows/ci.yml/badge.svg)
+![CI/CD](https://github.com/lihuacai168/Jmeter-Toolkit/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-green.svg)
-[![codecov](https://codecov.io/gh/lihuacai168/jmeter_toolit/branch/master/graph/badge.svg)](https://codecov.io/gh/lihuacai168/jmeter_toolit)
+[![codecov](https://codecov.io/gh/lihuacai168/Jmeter-Toolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/lihuacai168/jmeter_toolit)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 JMeter Toolkit 是一个专门为 JMeter 测试管理而设计的强大工具集。  
