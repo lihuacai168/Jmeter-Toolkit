@@ -17,6 +17,7 @@ os.environ["LOG_LEVEL"] = "INFO"
 import asyncio
 import json
 import shutil
+import subprocess
 import uuid
 from datetime import datetime
 from typing import Optional

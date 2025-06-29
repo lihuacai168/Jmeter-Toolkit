@@ -5,14 +5,14 @@ set -e
 
 echo "🧪 Starting Simplified CI Integration Tests..."
 
-# Function to cleanup
+# Note: Cleanup is handled by CI workflow to allow coverage extraction
+# Function to cleanup (disabled - handled by CI workflow)
 cleanup() {
-    echo "🧹 Cleaning up..."
-    docker-compose -f docker-compose.ci.yml down -v --remove-orphans 2>/dev/null || true
+    echo "ℹ️  Cleanup will be handled by CI workflow after coverage extraction"
 }
 
-# Trap cleanup on exit
-trap cleanup EXIT
+# Trap cleanup on exit (disabled - CI workflow handles cleanup)
+# trap cleanup EXIT
 
 COMPOSE_FILE="docker-compose.ci.yml"
 APP_URL="http://localhost:8002"
@@ -112,8 +112,8 @@ else
     fi
 fi
 
-# Run core API tests
-echo "🧪 Running core API tests..."
-docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest tests/test_execute_api.py -v --tb=short
+# Run core API tests with coverage
+echo "🧪 Running core API tests with coverage..."
+docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest tests/test_execute_api.py -v --cov=. --cov-report=xml --cov-report=term-missing --tb=short
 
 echo "✅ Simplified CI integration tests completed successfully!"

@@ -77,17 +77,10 @@ jobs:
         uv run pytest tests/test_performance_execute.py -v --tb=short -m performance
       continue-on-error: true
 
-    - name: Run full test suite with coverage
+    - name: Run unit test suite (no coverage)
       run: |
-        uv run pytest tests/ -v --cov=. --cov-report=xml --cov-report=term-missing --tb=short --ignore=tests/test_integration_execute.py
+        uv run pytest tests/ -v --tb=short --ignore=tests/test_integration_execute.py
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
 
   lint:
     name: Code Quality
@@ -282,10 +275,114 @@ jobs:
         chmod +x scripts/test-ci-simple.sh
         ./scripts/test-ci-simple.sh
 
+    - name: Extract coverage files from CI containers
+      run: |
+        echo "🔍 Extracting coverage files from CI test..."
+
+        # Get CI container ID
+        ci_container_id=$(docker-compose -f docker-compose.ci.yml ps -q ci-app 2>/dev/null | head -1)
+
+        if [ -n "$ci_container_id" ] && [ "$ci_container_id" != "" ]; then
+          echo "✅ Found CI container: $ci_container_id"
+
+          # Check if coverage file exists
+          if docker exec $ci_container_id test -f /app/coverage.xml 2>/dev/null; then
+            echo "✅ Found coverage.xml in CI container"
+            docker exec $ci_container_id ls -la /app/coverage.xml
+
+            # Copy coverage file
+            if docker cp $ci_container_id:/app/coverage.xml ./coverage.xml; then
+              echo "✅ Successfully extracted coverage from CI container"
+              echo "📊 Coverage file info:"
+              ls -la coverage.xml
+              echo "📝 Coverage preview:"
+              head -5 coverage.xml || echo "Could not preview coverage file"
+            else
+              echo "❌ Failed to copy coverage from CI container"
+            fi
+          else
+            echo "⚠️ No coverage.xml found in CI container"
+            docker exec $ci_container_id ls -la /app/ | grep -i coverage || echo "No coverage files found"
+          fi
+        else
+          echo "❌ No CI container found"
+          docker-compose -f docker-compose.ci.yml ps
+        fi
+
     - name: Run Production Environment Tests
       run: |
         chmod +x scripts/test-integration.sh
         ./scripts/test-integration.sh prod
+
+    - name: Extract coverage files from Docker containers
+      run: |
+        echo "🔍 Searching for coverage files in containers..."
+
+        # Function to extract coverage from a container
+        extract_coverage() {
+          local compose_file=$1
+          local container_name=$2
+          local service_name=$3
+
+          echo "   Checking $service_name service..."
+
+          # Get container ID
+          local container_id=$(docker-compose -f $compose_file ps -q $service_name 2>/dev/null | head -1)
+
+          if [ -n "$container_id" ] && [ "$container_id" != "" ]; then
+            echo "   Container ID: $container_id"
+
+            # Check if coverage file exists in container
+            if docker exec $container_id test -f /app/coverage.xml 2>/dev/null; then
+              echo "   ✅ Found coverage.xml in $service_name container"
+              docker exec $container_id ls -la /app/coverage.xml
+
+              # Copy coverage file
+              if docker cp $container_id:/app/coverage.xml ./coverage-$service_name.xml; then
+                echo "   ✅ Successfully copied coverage from $service_name"
+                # If this is the main coverage file, also copy as coverage.xml
+                if [ ! -f "./coverage.xml" ] || [ "$service_name" = "ci-app" ]; then
+                  cp ./coverage-$service_name.xml ./coverage.xml
+                  echo "   ✅ Set as main coverage file"
+                fi
+              else
+                echo "   ❌ Failed to copy coverage from $service_name"
+              fi
+            else
+              echo "   ⚠️  No coverage.xml found in $service_name container"
+            fi
+          else
+            echo "   ⚠️  No container found for $service_name"
+          fi
+        }
+
+        # Extract from production container (CI coverage already extracted)
+        extract_coverage "docker-compose.yml" "app" "app"
+
+        # Final check
+        echo "🔍 Final coverage file check:"
+        if [ -f "./coverage.xml" ]; then
+          echo "✅ Main coverage file found:"
+          ls -la coverage.xml
+          echo "📊 Coverage file size: $(du -h coverage.xml | cut -f1)"
+          echo "📝 Coverage file preview:"
+          head -10 coverage.xml || echo "Could not preview coverage file"
+        else
+          echo "❌ No coverage file found"
+          echo "📋 Available files:"
+          ls -la coverage*.xml 2>/dev/null || echo "No coverage files found"
+        fi
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      if: success() && hashFiles('coverage.xml') != ''
+      with:
+        slug: lihuacai168/Jmeter-Toolkit
+        name: jmeter-toolkit-integration-coverage
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: integration
+        fail_ci_if_error: false
 
     - name: Cleanup Docker resources
       if: always()

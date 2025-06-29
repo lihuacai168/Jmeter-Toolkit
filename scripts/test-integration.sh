@@ -152,21 +152,33 @@ if [ "$TEST_ENV" = "prod" ]; then
         echo "   ⚠️  API docs endpoint not accessible"
     fi
 
-    # Run basic API tests (but don't fail if some tests don't work in production)
-    echo "   Running core API tests..."
-    docker-compose -f $COMPOSE_FILE exec -T app python -m pytest tests/test_api.py -v || echo "⚠️  Some production tests failed (expected in minimal production setup)"
+    # Check if pytest is available in production environment
+    echo "   Checking if pytest is available in production..."
+    if docker-compose -f $COMPOSE_FILE exec -T app python -c "import pytest; print('pytest available')" 2>/dev/null; then
+        echo "   Running core API tests with coverage..."
+        docker-compose -f $COMPOSE_FILE exec -T app python -m pytest tests/test_api.py -v --cov=. --cov-report=xml --cov-report=term-missing 2>/dev/null || echo "⚠️  Some production tests failed (expected in minimal production setup)"
+    else
+        echo "   ⚠️  pytest not available in production environment (expected)"
+        echo "   ✅ Skipping coverage tests in production - using basic health checks only"
+
+        # Just do basic API connectivity tests without pytest
+        echo "   Testing basic API endpoints..."
+        curl -s "$APP_URL/health" > /dev/null && echo "   ✅ Health endpoint working"
+        curl -s "$APP_URL/docs" > /dev/null && echo "   ✅ Documentation endpoint working"
+        curl -s "$APP_URL/" > /dev/null && echo "   ✅ Root endpoint working"
+    fi
 else
     # Test/CI environment - check if test server is available
     if docker-compose -f $COMPOSE_FILE ps | grep -q "test-server\|ci-test-server"; then
-        echo "   Running full integration tests..."
-        docker-compose -f $COMPOSE_FILE exec -T $(echo $COMPOSE_FILE | grep ci >/dev/null && echo "ci-app" || echo "test-app") pytest tests/test_integration_execute.py -v -s || echo "⚠️  Some integration tests failed"
+        echo "   Running full integration tests with coverage..."
+        docker-compose -f $COMPOSE_FILE exec -T $(echo $COMPOSE_FILE | grep ci >/dev/null && echo "ci-app" || echo "test-app") pytest tests/test_integration_execute.py -v -s --cov=. --cov-report=xml --cov-report=term-missing || echo "⚠️  Some integration tests failed"
     else
         echo "   ⚠️  Test server not available, skipping integration tests"
     fi
 
-    # Run additional API tests
-    echo "   Running API tests in containerized environment..."
-    docker-compose -f $COMPOSE_FILE exec -T $(echo $COMPOSE_FILE | grep ci >/dev/null && echo "ci-app" || echo "test-app") pytest tests/test_execute_api.py -v || echo "⚠️  Some API tests failed"
+    # Run additional API tests with coverage
+    echo "   Running API tests in containerized environment with coverage..."
+    docker-compose -f $COMPOSE_FILE exec -T $(echo $COMPOSE_FILE | grep ci >/dev/null && echo "ci-app" || echo "test-app") pytest tests/test_execute_api.py -v --cov=. --cov-report=xml --cov-report=term-missing --cov-append || echo "⚠️  Some API tests failed"
 fi
 
 echo "✅ Integration tests completed successfully!"

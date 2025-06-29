@@ -118,8 +118,14 @@ class TestFileUploadDownload:
         assert "file_name" in upload_data
         assert upload_data["file_name"].endswith(".jmx")
 
-        # Check execution data
+        # Check execution data - wait for async completion
         execution_data = data["data"]["execution"]
+        task_id = execution_data.get("task_id")
+        if execution_data["status"] in ["pending", "running"] and task_id:
+            from tests.conftest import wait_for_task_completion
+
+            execution_data = wait_for_task_completion(client, task_id)
+            data["data"]["execution"] = execution_data
         assert execution_data["status"] == "completed"
         assert "output_file" in execution_data
         assert execution_data["output_file"].endswith(".jtl")
@@ -184,6 +190,14 @@ class TestFileUploadDownload:
 
         assert execute_response.status_code == 200
         execution_data = execute_response.json()["data"]["execution"]
+
+        # Wait for async execution to complete
+        task_id = execution_data.get("task_id")
+        if execution_data["status"] in ["pending", "running"] and task_id:
+            from tests.conftest import wait_for_task_completion
+
+            execution_data = wait_for_task_completion(client, task_id)
+
         jtl_filename = execution_data["output_file"]
 
         # Download the JTL file
@@ -282,8 +296,17 @@ class TestFileListingIntegration:
             filename = f"test_exec_{test_id}_{i}.jmx"
             response = client.post("/upload-and-execute", files={"file": (filename, file_data, "application/xml")})
             assert response.status_code == 200
+
+            execution_data = response.json()["data"]["execution"]
+            # Wait for async execution to complete
+            task_id = execution_data.get("task_id")
+            if execution_data["status"] in ["pending", "running"] and task_id:
+                from tests.conftest import wait_for_task_completion
+
+                execution_data = wait_for_task_completion(client, task_id)
+
             # Track the created JTL filename
-            jtl_filename = response.json()["data"]["execution"]["output_file"]
+            jtl_filename = execution_data["output_file"]
             created_jtl_files.append(jtl_filename)
 
         # List JTL files
@@ -326,6 +349,11 @@ class TestTaskManagementIntegration:
 
         retrieved_task = task_response.json()["data"]
         assert retrieved_task["task_id"] == task_id
+        # Wait for async execution to complete
+        if retrieved_task["status"] in ["pending", "running"]:
+            from tests.conftest import wait_for_task_completion
+
+            retrieved_task = wait_for_task_completion(client, task_id)
         assert retrieved_task["status"] == "completed"
         assert "output_file" in retrieved_task
 
@@ -341,6 +369,11 @@ class TestTaskManagementIntegration:
         # Find our task in the list
         our_task = next((t for t in tasks_data["tasks"] if t["task_id"] == task_id), None)
         assert our_task is not None
+        # Wait for async execution to complete if needed
+        if our_task["status"] in ["pending", "running"]:
+            from tests.conftest import wait_for_task_completion
+
+            our_task = wait_for_task_completion(client, task_id)
         assert our_task["status"] == "completed"
 
 

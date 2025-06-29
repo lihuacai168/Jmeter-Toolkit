@@ -1,11 +1,9 @@
 # JMeter Toolkit v2.0
 
-![CI/CD](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/CI/CD%20Pipeline/badge.svg)
-![Code Quality](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Code%20Quality/badge.svg)
-![Security](https://github.com/YOUR_USERNAME/jmeter_toolit/workflows/Security%20Scan/badge.svg)
+![CI/CD](https://github.com/lihuacai168/jmeter_toolit/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-green.svg)
-![Coverage](https://img.shields.io/badge/coverage-41%25-yellow.svg)
+[![codecov](https://codecov.io/gh/lihuacai168/jmeter_toolit/branch/master/graph/badge.svg)](https://codecov.io/gh/lihuacai168/jmeter_toolit)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 JMeter Toolkit 是一个专门为 JMeter 测试管理而设计的强大工具集。  
@@ -38,15 +36,13 @@ JMeter Toolkit 是一个专门为 JMeter 测试管理而设计的强大工具集
 
 
 # 使用演示
-## 1. 上传，执行，报告一条龙
-![jmx-upload-execute-report.gif](docs%2Fjmx-upload-execute-report.gif)
+## 1. JMeter Toolkit 主界面
+![main.png](docs/main.png)
+## 2. Jmeter 任务和报告管理
+![tasks.png](docs/tasks.png)
 
-## 2. 上传JMX文件并执行
-![upload-execute.png](docs%2Fupload-execute.png)
-## 3. 查看报告
-![report.png](docs%2Freport.png)
-# 快速启动
-
+## 3. 报告详情
+![report_detail.png](docs/report_detail.png)
 ## 开发环境
 
 ### 1. 克隆项目

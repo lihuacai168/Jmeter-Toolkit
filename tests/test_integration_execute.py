@@ -54,7 +54,12 @@ class TestExecuteIntegration:
         assert execute_response.status_code == 200
         execution_data = execute_response.json()["data"]
 
-        # Verify execution was successful
+        # Verify execution was successful - wait for async completion
+        task_id = execution_data.get("task_id")
+        if execution_data["status"] in ["pending", "running"] and task_id:
+            from tests.conftest import wait_for_task_completion
+
+            execution_data = wait_for_task_completion(client, task_id)
         assert execution_data["status"] == "completed"
         assert execution_data["file_name"] == upload_data["file_name"]
 
@@ -85,6 +90,13 @@ class TestExecuteIntegration:
         upload_data = data["data"]["upload"]
         execution_data = data["data"]["execution"]
 
+        # Wait for async execution to complete
+        task_id = execution_data.get("task_id")
+        if execution_data["status"] in ["pending", "running"] and task_id:
+            from tests.conftest import wait_for_task_completion
+
+            execution_data = wait_for_task_completion(client, task_id)
+            data["data"]["execution"] = execution_data
         assert execution_data["status"] == "completed"
         assert execution_data["file_name"] == upload_data["file_name"]
 
@@ -113,6 +125,11 @@ class TestExecuteIntegration:
         task_response = client.get(f"/tasks/{task_id}")
         assert task_response.status_code == 200
         task_data = task_response.json()["data"]
+        # Wait for async execution to complete
+        if task_data["status"] in ["pending", "running"]:
+            from tests.conftest import wait_for_task_completion
+
+            task_data = wait_for_task_completion(client, task_id)
         assert task_data["status"] == "completed"
 
         # Step 3: List all tasks
