@@ -77,10 +77,10 @@ jobs:
         uv run pytest tests/test_performance_execute.py -v --tb=short -m performance
       continue-on-error: true
 
-    - name: Run unit test suite (no coverage)
+    - name: Skip separate unit tests (now included in integration tests)
       run: |
-        uv run pytest tests/ -v --tb=short --ignore=tests/test_integration_execute.py
-
+        echo "ℹ️  Unit tests are now included in the comprehensive integration test suite"
+        echo "ℹ️  This provides better coverage by combining unit + integration testing"
 
   lint:
     name: Code Quality
@@ -270,14 +270,14 @@ jobs:
         sudo chmod +x /usr/local/bin/docker-compose
         docker-compose --version
 
-    - name: Run Simplified CI Integration Tests
+    - name: Run Comprehensive Test Suite (Unit + Integration)
       run: |
         chmod +x scripts/test-ci-simple.sh
         ./scripts/test-ci-simple.sh
 
-    - name: Extract coverage files from CI containers
+    - name: Extract coverage files from comprehensive test suite
       run: |
-        echo "🔍 Extracting coverage files from CI test..."
+        echo "🔍 Extracting coverage files from comprehensive test suite (unit + integration)..."
 
         # Get CI container ID
         ci_container_id=$(docker-compose -f docker-compose.ci.yml ps -q ci-app 2>/dev/null | head -1)

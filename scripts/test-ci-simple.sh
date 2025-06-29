@@ -112,8 +112,20 @@ else
     fi
 fi
 
-# Run core API tests with coverage
-echo "🧪 Running core API tests with coverage..."
-docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest tests/test_execute_api.py -v --cov=. --cov-report=xml --cov-report=term-missing --tb=short
+# Run comprehensive test suite with coverage (unit tests + integration tests)
+echo "🧪 Running comprehensive test suite with coverage..."
+echo "   📋 Test coverage includes:"
+echo "      • Unit tests: ~47 test functions"
+echo "      • Integration tests: test_execute_api.py (19 tests)"
+echo "      • Total coverage from all test files except test_integration_execute.py"
+
+# Run all tests except the full integration tests (which require more complex setup)
+docker-compose -f $COMPOSE_FILE exec -T ci-app python -m pytest tests/ -v \
+  --cov=. \
+  --cov-report=xml \
+  --cov-report=term-missing \
+  --tb=short \
+  --ignore=tests/test_integration_execute.py \
+  --ignore=tests/test_performance_execute.py
 
 echo "✅ Simplified CI integration tests completed successfully!"
