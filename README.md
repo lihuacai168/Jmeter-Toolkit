@@ -83,9 +83,21 @@ python main.py
 python dev_server.py
 ```
 
-### 5. 访问应用
-- **主界面**: http://localhost:8000
-- **API文档**: http://localhost:8000/docs
+### 5. 启动前端服务
+```bash
+# 进入前端目录
+cd frontend
+
+# 安装依赖
+npm install
+
+# 启动前端开发服务器
+npm start
+```
+
+### 6. 访问应用
+- **前端界面**: http://localhost:3000
+- **后端API文档**: http://localhost:8000/docs
 - **健康检查**: http://localhost:8000/health
 
 ## 📋 快速测试
@@ -107,7 +119,7 @@ cd test_examples
 ```
 
 ### 3. 运行测试
-1. 访问 http://localhost:8000
+1. 访问前端界面 http://localhost:3000
 2. 上传 `test_examples/sample_test.jmx` 文件
 3. 点击执行按钮开始测试
 4. 查看实时结果和生成的HTML报告
@@ -150,9 +162,9 @@ make up
 ```
 
 ### 3. 访问服务
-- **主应用**: http://localhost:8000
-- **API文档**: http://localhost:8000/docs
-- **监控指标**: http://localhost:8000/metrics
+- **前端界面**: http://localhost:3000
+- **后端API文档**: http://localhost:8000/docs
+- **监控指标**: http://localhost:8000/metrics (仅生产环境/完整版main.py)
 - **Celery监控**: http://localhost:5555
 
 
