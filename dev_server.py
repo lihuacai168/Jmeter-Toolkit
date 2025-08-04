@@ -804,10 +804,10 @@ async def download_html_report_zip(task_id: str):
 if __name__ == "__main__":
     import uvicorn
 
-    print("🚀 启动 JMeter Toolkit 开发服务器")
-    print("📍 访问地址: http://localhost:8000")
-    print("📖 API文档: http://localhost:8000/docs")
-    print("🔍 健康检查: http://localhost:8000/health")
-    print("⏹️  按 Ctrl+C 停止服务器")
+    logger.info("🚀 启动 JMeter Toolkit 开发服务器")
+    logger.info("📖 API文档: http://localhost:8000/docs")
+    logger.info("🔍 健康检查: http://localhost:8000/health")
+    logger.info("💡 前端界面: http://localhost:3000 (需单独启动)")
+    logger.info("⏹️  按 Ctrl+C 停止服务器")
 
     uvicorn.run("dev_server:app", host="0.0.0.0", port=8000, reload=True, log_level="info")
