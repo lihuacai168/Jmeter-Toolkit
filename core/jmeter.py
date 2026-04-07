@@ -91,7 +91,9 @@ class JMeterManager:
         # Find file record
         file_record = (
             self.db.query(FileRecord)
-            .filter(FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted is False)
+            .filter(
+                FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted.is_(False)
+            )
             .first()
         )
 
@@ -140,7 +142,9 @@ class JMeterManager:
         # Find file record
         file_record = (
             self.db.query(FileRecord)
-            .filter(FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted is False)
+            .filter(
+                FileRecord.stored_name == file_name, FileRecord.file_type == FileType.JMX, FileRecord.is_deleted.is_(False)
+            )
             .first()
         )
 
